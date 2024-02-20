@@ -67,6 +67,10 @@ module.exports = {
     'import/extensions': 0, // doesn't work with TS https://github.com/import-js/eslint-plugin-import/issues/2111
     'dot-notation': 0,
 
+    'no-spaced-func': 0, // https://github.com/iamturns/eslint-config-airbnb-typescript/issues/246
+    'func-call-spacing': 0,
+    '@typescript-eslint/func-call-spacing': ['error', 'never'],
+
     // Don't agree
     'max-len': 0,
     '@typescript-eslint/no-non-null-assertion': 0,
