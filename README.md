@@ -5,7 +5,10 @@
 1. Install the correct versions of each package, which are listed by the command:
 
   ```sh
-  npx install-peerdeps --dev eslint-config-mifi
+  (
+    export PKG=eslint-config-mifi;
+    npm info "$PKG@latest" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs yarn add -D "$PKG@latest"
+  )
   ```
 
   If using **yarn**, you can also use the shortcut described above if you have npm 5+ installed on your machine, as the command will detect that you are using yarn and will act accordingly.
