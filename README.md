@@ -2,18 +2,14 @@
 
 ## Installing
 
-1. Install the correct versions of each package, which are listed by the command:
+Install the correct versions of each package, which are listed by the command:
 
-  ```sh
-  (
-    export PKG=eslint-config-mifi;
-    npm info "$PKG@latest" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs yarn add -D "$PKG@latest"
-  )
-  ```
-
-  If using **yarn**, you can also use the shortcut described above if you have npm 5+ installed on your machine, as the command will detect that you are using yarn and will act accordingly.
-
-2. `npm install --save-dev eslint-config-mifi` or `yarn add -D eslint-config-mifi`
+```sh
+(
+  export PKG=eslint-config-mifi;
+  npm info "$PKG@latest" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs yarn add -D "$PKG"
+)
+```
 
 See also [eslint-config-airbnb](https://www.npmjs.com/package/eslint-config-airbnb)
 
@@ -28,7 +24,7 @@ module.exports = {
   overrides: [
     // In react/web code
     {
-      files: ['./src/**/*.{js,mjs,cjs,jsx,ts,mts,tsx}'],
+      files: ['./src/**/*.{js,mjs,cjs,mjs,jsx,ts,mts,tsx}'],
       env: {
         node: false,
         browser: true,
@@ -37,13 +33,10 @@ module.exports = {
 
     // In electron renderer, dependencies should be devDependencies (to prevent them from being included in the Electron ASAR package)
     {
-      files: ['./src/{renderer,preload}/**/*.{js,mjs,cjs,jsx,ts,mts,tsx}'],
+      files: ['./src/{renderer,preload}/**/*.{js,mjs,cjs,mjs,jsx,ts,mts,tsx}'],
       env: {
         node: false,
         browser: true,
-      },
-      globals: {
-        electron: true,
       },
       rules: {
         'import/no-extraneous-dependencies': ['error', {
