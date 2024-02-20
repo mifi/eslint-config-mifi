@@ -103,6 +103,7 @@ module.exports = {
     'unicorn/no-await-expression-member': 0,
     'unicorn/error-message': 0, // i'm lazy
     'unicorn/prefer-query-selector': 0,
+    'unicorn/no-array-reduce': 0,
 
     // extra wanted rules in addition to "recommended"
     'unicorn/custom-error-definition': 'error',
