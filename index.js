@@ -108,6 +108,11 @@ module.exports = {
     // extra wanted rules in addition to "recommended"
     'unicorn/custom-error-definition': 'error',
     'react-hooks/exhaustive-deps': 'error',
+    'no-constant-binary-expression': 'error',
+    'no-empty-static-block': 'error',
+    'prefer-object-has-own': 'error',
+    'no-unused-private-class-members': 'error',
+    'no-new-native-nonconstructor': 'error',
 
     'unicorn/filename-case': ['error', { cases: { camelCase: true, pascalCase: true } }],
   },
