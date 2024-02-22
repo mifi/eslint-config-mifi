@@ -54,10 +54,6 @@ module.exports = {
 
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
 
-    // todo https://github.com/iamturns/eslint-config-airbnb-typescript/blob/8ef77c928c97d977f053c9c638831363a715d4a9/lib/shared.js#L31
-
-    // todo https://github.com/eslint-community/eslint-plugin-n
-
     'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 0 }],
 
     // handled by TS
@@ -84,6 +80,7 @@ module.exports = {
     'react/jsx-one-expression-per-line': 0,
     'react/function-component-definition': 0,
     'no-promise-executor-return': 0,
+    'newline-per-chained-call': 0,
 
     // conflicts with TS
     'unicorn/prefer-module': 0,

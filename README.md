@@ -55,6 +55,14 @@ module.exports = {
 npx eslint --print-config test-fixtures/React.tsx
 ```
 
+## TODO
+
+Integrate more rules:
+
+- AirBnB typescript fixes: https://github.com/iamturns/eslint-config-airbnb-typescript/blob/8ef77c928c97d977f053c9c638831363a715d4a9/lib/shared.js#L31
+- https://github.com/eslint-community/eslint-plugin-n
+- https://github.com/eslint-community/eslint-plugin-security
+
 ## Releasing
 
 - `npm i -g np`
