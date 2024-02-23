@@ -35,6 +35,8 @@ module.exports = {
     },
   },
   rules: {
+    // modified rules:
+
     // based on airbnb
     'no-restricted-syntax': [
       'error',
@@ -53,8 +55,8 @@ module.exports = {
     ],
 
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
-
     'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 0, maxEOF: 0 }],
+    'unicorn/filename-case': ['error', { cases: { camelCase: true, pascalCase: true } }],
 
     // handled by TS
     'import/no-unresolved': 0, // https://github.com/iamturns/eslint-config-airbnb-typescript/tree/master?tab=readme-ov-file#why-is-importno-unresolved-disabled
@@ -63,6 +65,7 @@ module.exports = {
     'import/extensions': 0, // doesn't work with TS https://github.com/import-js/eslint-plugin-import/issues/2111
     'dot-notation': 0,
 
+    // replace non-ts rules (from airbnb probably) with equivalent TS rules
     'no-spaced-func': 0, // https://github.com/iamturns/eslint-config-airbnb-typescript/issues/246
     'func-call-spacing': 0,
     '@typescript-eslint/func-call-spacing': ['error', 'never'],
@@ -110,7 +113,6 @@ module.exports = {
     'prefer-object-has-own': 'error',
     'no-unused-private-class-members': 'error',
     'no-new-native-nonconstructor': 'error',
-
-    'unicorn/filename-case': ['error', { cases: { camelCase: true, pascalCase: true } }],
+    '@typescript-eslint/method-signature-style': ['error', 'property'], // https://www.totaltypescript.com/method-shorthand-syntax-considered-harmful
   },
 };
