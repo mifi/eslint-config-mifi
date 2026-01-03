@@ -5,7 +5,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
-    'plugin:@typescript-eslint/strict',
+    'plugin:@typescript-eslint/strict', // Contains all of `recommended` as well as additional strict rules that can also catch bugs
     'plugin:@typescript-eslint/stylistic',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
