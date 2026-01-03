@@ -65,5 +65,6 @@ Integrate more rules:
 
 ## Releasing
 
-- `npm i -g np`
-- `np`
+```bash
+np
+```
