@@ -21,7 +21,7 @@ module.exports = {
   ],
   env: {
     es2022: true,
-    node: true, // nice default, butit  should be disabled for web code in consuming projects
+    node: true, // nice default, but it  should be disabled for web code in consuming projects
 
     // unset what airbnb sets:
     es6: false,
@@ -67,8 +67,7 @@ module.exports = {
 
     // replace non-ts rules (from airbnb probably) with equivalent TS rules
     'no-spaced-func': 0, // https://github.com/iamturns/eslint-config-airbnb-typescript/issues/246
-    'func-call-spacing': 0,
-    '@typescript-eslint/func-call-spacing': ['error', 'never'],
+    'func-call-spacing': ['error', 'never'],
 
     // Don't agree
     'max-len': 0,
