@@ -681,7 +681,7 @@
       }
     ],
     "import/first": "error",
-    "import/newline-after-import": "error",
+    "import/newline-after-import": "warn",
     "import/no-absolute-path": "error",
     "import/no-amd": "error",
     "import/no-cycle": [

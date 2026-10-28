@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import migrateSource, { replacedRules } from '../migrateSource.mjs';
-import { replaced } from './mapping.ts';
+import config from '../oxlintrc.json' with { type: 'json' };
+import migrateSource, { replacedRules, successorRules } from '../migrateSource.mjs';
+import { dropped, replaced } from './mapping.ts';
 
 test('renames rules in eslint directive comments', () => {
   assert.equal(migrateSource([
@@ -32,4 +33,12 @@ test('renames all rules in multi-line block directives', () => {
 test('leaves code after a directive without rules alone', () => {
   const source = '// eslint-disable-next-line\nconst { indent } = opts;';
   assert.equal(migrateSource(source), source);
+});
+
+test('renames dropped rules to their successor in our config', () => {
+  for (const [name, successor] of Object.entries(successorRules)) {
+    assert.ok(Object.hasOwn(dropped, name), name);
+    assert.ok(Object.hasOwn(config.rules, successor), successor);
+  }
+  assert.equal(migrateSource('// eslint-disable-next-line unicorn/no-array-push-push'), '// eslint-disable-next-line unicorn/prefer-single-call');
 });

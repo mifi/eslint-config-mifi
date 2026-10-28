@@ -31,7 +31,7 @@ test('oxlint accepts the config (rule names and options are validated)', () => {
 });
 
 for (const ext of extensions) {
-  test(`every legacy rule is carried over with the same severity and options (.${ext})`, () => {
+  test(`every legacy rule is carried over with the same options (formatting rules as warnings, the rest as errors) (.${ext})`, () => {
     const legacy = getLegacyConfig(ext).rules;
     const actual = getOxlintRules(`src/file.${ext}`);
 

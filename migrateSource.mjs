@@ -11,7 +11,25 @@ export const replacedRules = {
   'react/no-access-state-in-setstate': '@eslint-react/no-access-state-in-setstate',
 };
 
-const renames = new Map(Object.entries(replacedRules));
+// Dropped rules whose successor is in our config (see `dropped` in test/mapping.ts), so that their disable comments keep working
+export const successorRules = {
+  'unicorn/no-array-push-push': 'unicorn/prefer-single-call',
+  'unicorn/no-instanceof-array': 'unicorn/no-instanceof-builtins',
+  'unicorn/no-length-as-slice-end': 'unicorn/no-unnecessary-slice-end',
+  'unicorn/prefer-dom-node-dataset': 'unicorn-js/dom-node-dataset',
+  'unicorn/no-hex-escape': 'unicorn-js/prefer-unicode-code-point-escapes',
+  'react/jsx-indent': '@stylistic/indent',
+  'react/jsx-props-no-multi-spaces': '@stylistic/no-multi-spaces',
+  'react/no-deprecated': 'typescript/no-deprecated',
+  'no-buffer-constructor': 'typescript/no-deprecated',
+};
+
+// ESLint's core formatting rules that @stylistic renamed
+/** @type {Record<string, string>} */
+export const stylisticRenames = { 'func-call-spacing': 'function-call-spacing' };
+const coreFormattingRules = new Map(Object.entries(stylisticRenames).map(([coreRule, stylisticRule]) => [stylisticRule, coreRule]));
+
+const renames = new Map(Object.entries({ ...replacedRules, ...successorRules }));
 for (const name of Object.keys(config.rules)) {
   // The original ESLint plugins are loaded as JS plugins aliased `<plugin>-js` (`eslint-js` being ESLint's core rules)
   const [, plugin, rule] = /^(.+)-js\/(.+)$/.exec(name) ?? [];
@@ -24,7 +42,7 @@ for (const name of Object.keys(config.rules)) {
     renames.set(`react/${stylisticRule}`, name);
     continue;
   }
-  const coreRule = stylisticRule === 'function-call-spacing' ? 'func-call-spacing' : stylisticRule;
+  const coreRule = coreFormattingRules.get(stylisticRule) ?? stylisticRule;
   renames.set(coreRule, name);
   // also the eslint-js/ names that an earlier version of this config used
   renames.set(`eslint-js/${coreRule}`, name);

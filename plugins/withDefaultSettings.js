@@ -21,9 +21,17 @@ const mergeSettings = (defaults, settings) => ({
  * @param {S} defaultSettings
  */
 export default function withDefaultSettings(plugin, defaultSettings) {
+  // cached per settings object, because rules (e.g. import-x's resolver) cache on the identity of `context.settings`
+  /** @type {WeakMap<Settings, Settings>} */
+  const mergedSettings = new WeakMap();
+
   /** @param {import('eslint').Rule.RuleContext} context */
   const wrapContext = (context) => {
-    const settings = mergeSettings(defaultSettings, context.settings);
+    let settings = mergedSettings.get(context.settings);
+    if (settings == null) {
+      settings = mergeSettings(defaultSettings, context.settings);
+      mergedSettings.set(context.settings, settings);
+    }
     return new Proxy(context, {
       get: (target, prop) => {
         if (prop === 'settings') return settings;

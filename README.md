@@ -2,7 +2,7 @@
 
 mifi's [oxlint](https://oxc.rs/docs/guide/usage/linter) config, formerly [eslint-config-mifi](https://www.npmjs.com/package/eslint-config-mifi) (ESLint + `eslint-config-airbnb`).
 
-It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options, and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.ts](test/mapping.ts). This is verified by the [parity tests](test/parity.test.ts) against a frozen copy of the old config in [legacy/](legacy/).
+It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options (but only formatting rules are warnings now, see below), and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.ts](test/mapping.ts). This is verified by the [parity tests](test/parity.test.ts) against a frozen copy of the old config in [legacy/](legacy/).
 
 Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins.html) using ESLint plugins, some aliased because oxlint reserves the native plugin names:
 
@@ -66,12 +66,12 @@ For VS Code, use the [oxc extension](https://marketplace.visualstudio.com/items?
 
 ### Too many errors?
 
-When a rule causes a lot of changes in your project, turn it off in your own `.oxlintrc.json` (and fix it later). When it only causes a few, but risky, changes, use disable comments on those lines.
+When a rule causes a lot of changes in your project, turn it off in your own `.oxlintrc.json` (and fix it later). For example `import/extensions` (explicit `.ts` extensions in relative imports) if your bundler doesn't need them. When it only causes a few, but risky, changes, use disable comments on those lines.
 
 ## Migrating from eslint-config-mifi
 
 1. Replace `eslint`, `eslint-config-mifi`, `@typescript-eslint/*` and `eslint-plugin-*` with the packages above.
-2. Move your `.eslintrc*` to `.oxlintrc.json` (see above), and `.eslintignore` to `ignorePatterns`. Note that oxlint doesn't ignore dotfiles (e.g. `.yarn/releases`) like ESLint does.
+2. Move your `.eslintrc*` to `.oxlintrc.json` (see above), and `.eslintignore` to `ignorePatterns`. Rename `import/*` settings (e.g. `import/resolver`) to `import-x/*`, which is what eslint-plugin-import-x reads. Note that oxlint doesn't ignore dotfiles (e.g. `.yarn/releases`) like ESLint does.
 3. Rename rules in your config that are now JS plugin rules (e.g. `import/no-extraneous-dependencies` -> `import-js/no-extraneous-dependencies`, `indent` -> `@stylistic/indent`, see the table above).
 4. Rename them in your `eslint-disable` comments too (oxlint respects `eslint-disable` comments):
    ```sh

@@ -1,7 +1,7 @@
 // Maps rule names from the legacy ESLint config (see legacy/) to their oxlint equivalents.
 // Shared by the parity tests (and used once to bootstrap oxlintrc.json).
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,6 +10,8 @@ import { fileURLToPath } from 'node:url';
 import stylistic from '@stylistic/eslint-plugin';
 import { builtinRules } from 'eslint/use-at-your-own-risk';
 import unicorn from 'eslint-plugin-unicorn';
+
+import { stylisticRenames } from '../migrateSource.mjs';
 
 // eslint-disable-next-line typescript/no-unsafe-return, typescript/no-unnecessary-type-parameters -- for JSON from trusted sources (our own config and tools)
 export const parseJson = <T>(text: string): T => JSON.parse(text);
@@ -317,21 +319,26 @@ export function getLegacyConfig(ext: string) {
 
 export function getNativeRules() {
   // with an empty config, so that it doesn't depend on (or fail because of) our own config
-  const emptyConfig = join(mkdtempSync(`${tmpdir()}/oxlint-`), '.oxlintrc.json');
+  const dir = mkdtempSync(`${tmpdir()}/oxlint-`);
+  const emptyConfig = join(dir, '.oxlintrc.json');
   writeFileSync(emptyConfig, '{}');
   const rules = parseJson<{ scope: string, value: string }[]>(execFileSync(oxlintBin, ['-c', emptyConfig, '--rules', '--format=json'], { encoding: 'utf8' }));
+  rmSync(dir, { recursive: true });
   return new Set(rules.map(({ scope, value }) => (scope === 'eslint' ? value : `${scope.replaceAll('_', '-')}/${value}`)));
 }
 
 // @stylistic renamed some of ESLint's core formatting rules
-const stylisticRenames: Record<string, string> = { 'func-call-spacing': 'function-call-spacing' };
 const stylisticRules = new Set(Object.keys(stylistic.rules));
 const requireLegacy = (id: string): unknown => createRequire(legacyDir)(id);
-const reactPlugin = asObject(requireLegacy('eslint-plugin-react'));
+const legacyRules = (pluginName: string) => {
+  const plugin = asObject(requireLegacy(pluginName));
+  return new Map(Object.entries(asObject(plugin.rules)));
+};
 const ruleMetas: Record<string, ReadonlyMap<string, unknown>> = {
   // eslint-disable-next-line typescript/no-deprecated -- ESLint has no other API that lists its core rules
   '': builtinRules,
-  react: new Map(Object.entries(asObject(reactPlugin.rules))),
+  react: legacyRules('eslint-plugin-react'),
+  import: legacyRules('eslint-plugin-import'),
   unicorn: new Map(Object.entries(unicorn.rules ?? {})),
 };
 
