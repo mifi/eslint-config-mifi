@@ -22,6 +22,7 @@ export const dropped = {
   'react-hooks/gating': 'Only validates React Compiler gating configuration, which we don\'t pass to the linter',
   'no-return-await': `${deprecated}: \`return await\` is not slower and gives better stack traces`,
   'react/jsx-props-no-multi-spaces': `${deprecated}. Crashes under oxlint, and no-multi-spaces covers it`,
+  'react/jsx-indent': `${deprecated}, @stylistic/indent handles JSX`,
   strict: `${deprecated}: 'use strict' is meaningless in ES modules and TypeScript`,
   'lines-around-directive': deprecated,
   'no-continue': 'Conflicts with unicorn/prefer-continue (an early `continue` is considered good style now)',
@@ -203,6 +204,14 @@ const adaptedOptions = {
     reason: 'also allow mutating `draft` (immer)',
     adapt: ([severity, { ignorePropertyModificationsFor, ...rest }]) => [severity, { ...rest, ignorePropertyModificationsFor: [...ignorePropertyModificationsFor, 'draft'] }],
   },
+  indent: {
+    reason: '@stylistic/indent handles JSX (it replaces the deprecated jsx-indent), so don\'t ignore JSX nodes',
+    adapt: ([severity, size, { ignoredNodes, ...rest }]) => [severity, size, { ...rest, ignoredNodes: ignoredNodes.filter((node) => !node.startsWith('JSX')) }],
+  },
+  'object-property-newline': {
+    reason: '@stylistic removed the deprecated allowMultiplePropertiesPerLine alias (false, i.e. not set)',
+    adapt: ([severity, options]) => [severity, Object.fromEntries(Object.entries(options).filter(([key]) => key !== 'allowMultiplePropertiesPerLine'))],
+  },
   'import/no-cycle': {
     reason: 'oxlint wants maxDepth as a number (unlimited is the default anyway) and has no disableScc (a perf option). eslint-plugin-import always ignores type imports',
     adapt: ([severity, options]) => [severity, { ...Object.fromEntries(Object.entries(options).filter(([key]) => !['maxDepth', 'disableScc'].includes(key))), ignoreTypes: true }],
@@ -253,6 +262,8 @@ export function getNativeRules() {
   return new Set(rules.map(({ scope, value }) => (scope === 'eslint' ? value : `${scope.replaceAll('_', '-')}/${value}`)));
 }
 
+// @stylistic renamed some of ESLint's core formatting rules
+const stylisticRenames = { 'func-call-spacing': 'function-call-spacing' };
 const stylisticRules = new Set(Object.keys(require('@stylistic/eslint-plugin').rules));
 const ruleMetas = {
   '': require('eslint/use-at-your-own-risk').builtinRules,
@@ -273,8 +284,9 @@ function toOxlintRuleName(eslintName, nativeRules) {
   // ESLint's deprecated Node.js core rules live in oxlint's node plugin
   if (plugin === '' && nativeRules.has(`node/${rule}`)) return `node/${rule}`;
 
-  // eslint-plugin-react's formatting rules moved to @stylistic
-  if (plugin === 'react' && stylisticRules.has(rule)) return `@stylistic/${rule}`;
+  // ESLint's deprecated core formatting rules and eslint-plugin-react's formatting rules moved to @stylistic
+  const stylisticRule = stylisticRenames[rule] ?? rule;
+  if (['', 'react'].includes(plugin) && stylisticRules.has(stylisticRule)) return `@stylistic/${stylisticRule}`;
 
   const alias = jsPluginAliases[plugin];
   if (alias) return `${alias}/${rule}`;

@@ -22,8 +22,14 @@ const renames = new Map([
     const [, plugin, rule] = match;
     return [[plugin === 'eslint' ? rule : `${plugin}/${rule}`, name]];
   }),
-  // eslint-plugin-react's formatting rules moved to @stylistic
-  ...Object.keys(config.rules).filter((name) => name.startsWith('@stylistic/jsx-')).map((name) => [name.replace('@stylistic/', 'react/'), name]),
+  // ESLint's core formatting rules and eslint-plugin-react's formatting rules moved to @stylistic
+  ...Object.keys(config.rules).filter((name) => name.startsWith('@stylistic/')).flatMap((name) => {
+    const rule = name.slice('@stylistic/'.length);
+    if (rule.startsWith('jsx-')) return [[`react/${rule}`, name]];
+    const coreRule = rule === 'function-call-spacing' ? 'func-call-spacing' : rule;
+    // also the eslint-js/ names that an earlier version of this config used
+    return [[coreRule, name], [`eslint-js/${coreRule}`, name]];
+  }),
 ]);
 
 // The rule list ends at the end of the line (or comment), or at a `--` description
