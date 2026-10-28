@@ -288,7 +288,7 @@
     "eslint-js/no-extra-semi": "warn",
     "eslint-js/no-floating-decimal": "warn",
     "eslint-js/no-mixed-operators": [
-      "warn",
+      "error",
       {
         "groups": [
           [
@@ -529,7 +529,7 @@
       "after"
     ],
     "for-direction": "error",
-    "func-names": "warn",
+    "func-names": "error",
     "getter-return": [
       "error",
       {
@@ -611,7 +611,7 @@
         "ignoreTypes": true
       }
     ],
-    "import/no-duplicates": "warn",
+    "import/no-duplicates": "error",
     "import/no-dynamic-require": "error",
     "import/no-mutable-exports": "error",
     "import/no-named-default": "error",
@@ -867,7 +867,7 @@
         "properties": true
       }
     ],
-    "no-alert": "warn",
+    "no-alert": "error",
     "no-array-constructor": "error",
     "no-async-promise-executor": "error",
     "no-bitwise": "error",
@@ -879,7 +879,7 @@
       "error",
       "always"
     ],
-    "no-console": "warn",
+    "no-console": "error",
     "no-const-assign": "error",
     "no-constant-binary-expression": "error",
     "no-constant-condition": "error",
@@ -1381,7 +1381,7 @@
     "react/exhaustive-deps": "error",
     "react/globals": "error",
     "react/immutability": "error",
-    "react/incompatible-library": "warn",
+    "react/incompatible-library": "error",
     "react/jsx-boolean-value": [
       "error",
       "never",
@@ -1434,7 +1434,7 @@
     "react/jsx-no-undef": "error",
     "react/jsx-no-useless-fragment": "error",
     "react/jsx-pascal-case": [
-      "warn",
+      "error",
       {
         "allowAllCaps": true,
         "ignore": []
@@ -1451,7 +1451,7 @@
     ],
     "react/no-array-index-key": "error",
     "react/no-children-prop": "error",
-    "react/no-danger": "warn",
+    "react/no-danger": "error",
     "react/no-danger-with-children": "error",
     "react/no-did-update-set-state": "error",
     "react/no-direct-mutation-state": "error",
@@ -1484,7 +1484,7 @@
     ],
     "react/static-components": "error",
     "react/style-prop-object": "error",
-    "react/unsupported-syntax": "warn",
+    "react/unsupported-syntax": "error",
     "react/use-memo": "error",
     "react/void-dom-elements-no-children": "error",
     "require-yield": "error",
@@ -1698,7 +1698,7 @@
     "unicorn/require-module-attributes": "error",
     "unicorn/require-module-specifiers": "error",
     "unicorn/require-number-to-fixed-digits-argument": "error",
-    "unicorn/switch-case-braces": "warn",
+    "unicorn/switch-case-braces": "error",
     "unicorn/switch-case-break-position": "error",
     "unicorn/text-encoding-identifier-case": "error",
     "unicorn/throw-new-error": "error",

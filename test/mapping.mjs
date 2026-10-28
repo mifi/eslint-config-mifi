@@ -36,7 +36,7 @@ export const dropped = {
   ].map((rule) => [rule, jsOnly])),
 };
 
-// Rules from the legacy config that are replaced by their native successor (with the same severity)
+// Rules from the legacy config that are replaced by their native successor
 export const replaced = {
   'no-new-object': { by: 'no-object-constructor', reason: `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)` },
 };
@@ -150,16 +150,24 @@ const ruleMetas = {
   unicorn: new Map(Object.entries(require('eslint-plugin-unicorn').rules)),
 };
 
-// Formatting rules (the ones that moved to @stylistic, or of the layout type) are warnings, so that they stand out from real problems
-function isStylistic(eslintName) {
+// Rules that moved to @stylistic (or are of the layout type), but are about more than formatting
+const notFormatting = new Set([
+  'no-mixed-operators', // prevents precedence mistakes, like `a && b || c`
+  'react/jsx-pascal-case', // naming
+  'unicorn/switch-case-braces', // code structure
+]);
+
+// Only formatting rules (the ones that moved to @stylistic, or of the layout type) are warnings, so that they stand out from real problems
+function isFormatting(eslintName) {
+  if (notFormatting.has(eslintName)) return false;
   const [plugin, rule] = splitRuleName(eslintName);
   return (['', 'react'].includes(plugin) && stylisticRules.has(rule)) || ruleMetas[plugin]?.get(rule)?.meta?.type === 'layout';
 }
 
 // Returns the expected oxlint [name, [severity, ...options]] for a legacy ESLint rule, or undefined if dropped
-export function toOxlintRule(eslintName, [severity, ...options], nativeRules) {
+export function toOxlintRule(eslintName, [, ...options], nativeRules) {
   if (dropped[eslintName]) return undefined;
-  if (replaced[eslintName]) return [replaced[eslintName].by, [severity]];
-  const value = [isStylistic(eslintName) ? 'warn' : severity, ...options];
+  if (replaced[eslintName]) return [replaced[eslintName].by, ['error']];
+  const value = [isFormatting(eslintName) ? 'warn' : 'error', ...options];
   return [toOxlintRuleName(eslintName, nativeRules), adaptedOptions[eslintName]?.adapt(value) ?? value];
 }
