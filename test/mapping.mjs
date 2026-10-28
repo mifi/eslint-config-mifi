@@ -60,6 +60,8 @@ export const added = {
     'typescript/only-throw-error', 'typescript/prefer-promise-reject-errors', 'typescript/prefer-reduce-type-parameter', 'typescript/prefer-return-this-type', 'typescript/related-getter-setter-pairs',
     'typescript/restrict-plus-operands', 'typescript/return-await', 'typescript/use-unknown-in-catch-callback-variable',
   ]),
+  // relative imports need explicit extensions when run without a bundler (e.g. Node's type stripping), like `./util.ts`
+  'import/extensions': 'explicit extensions in relative imports',
   ...fromConfigs('typescript-eslint stylistic-type-checked', ['typescript/non-nullable-type-assertion-style', 'typescript/prefer-find', 'typescript/prefer-includes', 'typescript/prefer-string-starts-ends-with']),
 };
 

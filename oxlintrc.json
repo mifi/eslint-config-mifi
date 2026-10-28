@@ -591,6 +591,14 @@
         "warnOnUnassignedImports": false
       }
     ],
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "ignorePackages": true,
+        "checkTypeImports": true
+      }
+    ],
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-absolute-path": "error",
