@@ -1645,7 +1645,6 @@
     "typescript/restrict-template-expressions": "error",
     "typescript/return-await": "error",
     "typescript/strict-boolean-expressions": "error",
-    "typescript/strict-void-return": "error",
     "typescript/switch-exhaustiveness-check": "error",
     "typescript/triple-slash-reference": "error",
     "typescript/unbound-method": "error",

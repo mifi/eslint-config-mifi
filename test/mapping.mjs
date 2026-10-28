@@ -200,7 +200,7 @@ export const added = {
     'react/no-clone-element', 'react/no-react-children', 'react/prefer-function-component', 'react/only-export-components',
     'typescript/no-unnecessary-parameter-property-assignment', 'typescript/no-useless-empty-export',
     'typescript/require-array-sort-compare', 'typescript/consistent-type-imports', 'typescript/no-import-type-side-effects',
-    'typescript/no-unnecessary-qualifier', 'typescript/prefer-enum-initializers', 'typescript/strict-void-return',
+    'typescript/no-unnecessary-qualifier', 'typescript/prefer-enum-initializers',
     'typescript/promise-function-async', 'jsx-a11y/no-aria-hidden-on-focusable', 'jsx-a11y/anchor-ambiguous-text', 'node/no-exports-assign',
     'node/no-path-concat', 'import/no-empty-named-blocks', 'import/consistent-type-specifier-style', 'promise/no-return-in-finally',
     'promise/param-names', 'promise/no-nesting', 'promise/no-return-wrap', 'promise/prefer-catch', 'promise/prefer-await-to-then',
