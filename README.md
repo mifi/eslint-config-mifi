@@ -2,7 +2,7 @@
 
 mifi's [oxlint](https://oxc.rs/docs/guide/usage/linter) config, formerly [eslint-config-mifi](https://www.npmjs.com/package/eslint-config-mifi) (ESLint + `eslint-config-airbnb`).
 
-It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options, and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.mjs](test/mapping.mjs). This is verified by the [parity tests](test/parity.test.mjs) against a frozen copy of the old config in [legacy/](legacy/).
+It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options, and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.ts](test/mapping.ts). This is verified by the [parity tests](test/parity.test.ts) against a frozen copy of the old config in [legacy/](legacy/).
 
 Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins.html) using ESLint plugins, some aliased because oxlint reserves the native plugin names:
 
@@ -84,7 +84,11 @@ When a rule causes a lot of changes in your project, turn it off in your own `.o
 yarn install
 (cd legacy && yarn install)
 yarn test
+yarn typecheck
+yarn lint
 ```
+
+The tests are TypeScript. The published files (`plugins/`, `migrate*.mjs`) are JavaScript with JSDoc types (checked by `yarn typecheck`), because Node doesn't strip types in `node_modules`.
 
 ## Releasing
 

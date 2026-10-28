@@ -1,10 +1,8 @@
 // Renames rules in eslint-disable/enable comments to their oxlint names in our config,
 // e.g. `// eslint-disable-next-line import/no-extraneous-dependencies` -> `import-js/no-extraneous-dependencies`
-import { readFileSync } from 'node:fs';
+import config from './oxlintrc.json' with { type: 'json' };
 
-const config = JSON.parse(readFileSync(new URL('oxlintrc.json', import.meta.url), 'utf8'));
-
-// Rules that were replaced by their successor (see test/mapping.mjs)
+// Rules that were replaced by their successor (see test/mapping.ts)
 export const replacedRules = {
   'consistent-return': 'typescript/consistent-return',
   'no-new-object': 'no-object-constructor',
@@ -13,33 +11,35 @@ export const replacedRules = {
   'react/no-access-state-in-setstate': '@eslint-react/no-access-state-in-setstate',
 };
 
-const renames = new Map([
-  ...Object.entries(replacedRules),
+const renames = new Map(Object.entries(replacedRules));
+for (const name of Object.keys(config.rules)) {
   // The original ESLint plugins are loaded as JS plugins aliased `<plugin>-js` (`eslint-js` being ESLint's core rules)
-  ...Object.keys(config.rules).flatMap((name) => {
-    const match = /^(.+)-js\/(.+)$/.exec(name);
-    if (!match) return [];
-    const [, plugin, rule] = match;
-    return [[plugin === 'eslint' ? rule : `${plugin}/${rule}`, name]];
-  }),
+  const [, plugin, rule] = /^(.+)-js\/(.+)$/.exec(name) ?? [];
+  if (plugin != null && rule != null) renames.set(plugin === 'eslint' ? rule : `${plugin}/${rule}`, name);
+
   // ESLint's core formatting rules and eslint-plugin-react's formatting rules moved to @stylistic
-  ...Object.keys(config.rules).filter((name) => name.startsWith('@stylistic/')).flatMap((name) => {
-    const rule = name.slice('@stylistic/'.length);
-    if (rule.startsWith('jsx-')) return [[`react/${rule}`, name]];
-    const coreRule = rule === 'function-call-spacing' ? 'func-call-spacing' : rule;
-    // also the eslint-js/ names that an earlier version of this config used
-    return [[coreRule, name], [`eslint-js/${coreRule}`, name]];
-  }),
-]);
+  if (!name.startsWith('@stylistic/')) continue;
+  const stylisticRule = name.slice('@stylistic/'.length);
+  if (stylisticRule.startsWith('jsx-')) {
+    renames.set(`react/${stylisticRule}`, name);
+    continue;
+  }
+  const coreRule = stylisticRule === 'function-call-spacing' ? 'func-call-spacing' : stylisticRule;
+  renames.set(coreRule, name);
+  // also the eslint-js/ names that an earlier version of this config used
+  renames.set(`eslint-js/${coreRule}`, name);
+}
 
 // The rule list ends at the end of the line (or comment), or at a `--` description
 const lineDirective = /(\/\/[ \t]*eslint-(?:disable|enable)(?:-next-line|-line)?[ \t]+)(.*?)(?=[ \t]--|$)/gm;
 const blockDirective = /(\/\*\s*eslint-(?:disable|enable)(?:-next-line|-line)?\s+)([\s\S]*?)(?=\s--|\*\/)/g;
 
+/** @type {(prefix: string, rules: string) => string} */
 const renameRules = (prefix, rules) => prefix + rules.replaceAll(/[^\s,]+/g, (rule) => renames.get(rule) ?? rule);
 
+/** @param {string} source */
 export default function migrateSource(source) {
   return source
-    .replaceAll(lineDirective, (_, prefix, rules) => renameRules(prefix, rules))
-    .replaceAll(blockDirective, (_, prefix, rules) => renameRules(prefix, rules));
+    .replaceAll(lineDirective, (/** @type {string} */ _, /** @type {string} */ prefix, /** @type {string} */ rules) => renameRules(prefix, rules))
+    .replaceAll(blockDirective, (/** @type {string} */ _, /** @type {string} */ prefix, /** @type {string} */ rules) => renameRules(prefix, rules));
 }

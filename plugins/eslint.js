@@ -5,5 +5,6 @@ const ruleNames = ['camelcase', 'no-restricted-syntax', 'no-undef-init'];
 
 export default {
   meta: { name: 'eslint' },
+  // eslint-disable-next-line typescript/no-deprecated -- ESLint has no other API that exposes its core rules
   rules: Object.fromEntries(ruleNames.map((name) => [name, builtinRules.get(name)])),
 };

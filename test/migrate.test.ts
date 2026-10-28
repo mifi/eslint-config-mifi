@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import migrateSource, { replacedRules } from '../migrateSource.mjs';
-import { replaced } from './mapping.mjs';
+import { replaced } from './mapping.ts';
 
 test('renames rules in eslint directive comments', () => {
   assert.equal(migrateSource([

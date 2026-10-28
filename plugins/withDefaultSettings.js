@@ -1,21 +1,42 @@
 // oxlint doesn't pass `settings` from extended configs to the rules, so a consumer's config that extends ours would lose them.
 // Instead we give each rule a context with our settings as defaults (merged per setting, like ESLint does)
+
+/** @typedef {Record<string, unknown>} Settings */
+
+/** @type {(value: unknown) => value is Settings} */
 const isObject = (value) => value != null && typeof value === 'object' && !Array.isArray(value);
 
+/** @type {(defaults: Settings, settings: Settings) => Settings} */
 const mergeSettings = (defaults, settings) => ({
   ...defaults,
-  ...Object.fromEntries(Object.entries(settings).map(([key, value]) => [key, isObject(value) && isObject(defaults[key]) ? { ...defaults[key], ...value } : value])),
+  ...Object.fromEntries(Object.entries(settings).map(([key, value]) => {
+    const defaultValue = defaults[key];
+    return [key, isObject(value) && isObject(defaultValue) ? { ...defaultValue, ...value } : value];
+  })),
 });
 
+/**
+ * @template {Settings} S
+ * @param {{ rules: Record<string, import('eslint').Rule.RuleModule> }} plugin
+ * @param {S} defaultSettings
+ */
 export default function withDefaultSettings(plugin, defaultSettings) {
+  /** @param {import('eslint').Rule.RuleContext} context */
   const wrapContext = (context) => {
     const settings = mergeSettings(defaultSettings, context.settings);
-    return new Proxy(context, { get: (target, prop) => (prop === 'settings' ? settings : Reflect.get(target, prop)) });
+    return new Proxy(context, {
+      get: (target, prop) => {
+        if (prop === 'settings') return settings;
+        /** @type {unknown} */
+        const value = Reflect.get(target, prop);
+        return value;
+      },
+    });
   };
 
   return {
     ...plugin,
     defaultSettings,
-    rules: Object.fromEntries(Object.entries(plugin.rules).map(([name, rule]) => [name, { ...rule, create: (context) => rule.create(wrapContext(context)) }])),
+    rules: Object.fromEntries(Object.entries(plugin.rules).map(([name, rule]) => [name, { ...rule, create: (/** @type {import('eslint').Rule.RuleContext} */ context) => rule.create(wrapContext(context)) }])),
   };
 }

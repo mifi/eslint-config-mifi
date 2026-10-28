@@ -30,6 +30,8 @@ jobs:
       - run: yarn install --immutable
         working-directory: legacy
 
+      - run: yarn typecheck
+
       - run: yarn lint
 
       - run: yarn test

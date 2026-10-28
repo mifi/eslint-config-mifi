@@ -5,22 +5,25 @@ import { matchesGlob } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { added, dropped, extensions, getLegacyConfig, getNativeRules, oxlintBin, toOxlintRule } from './mapping.mjs';
+import importPlugin from '../plugins/import.js';
+import { added, dropped, extensions, getLegacyConfig, getNativeRules, oxlintBin, parseJson, toOxlintRule } from './mapping.ts';
+import type { RuleValue } from './mapping.ts';
 
 const configPath = fileURLToPath(new URL('../oxlintrc.json', import.meta.url));
-const config = JSON.parse(readFileSync(configPath, 'utf8'));
+type RuleSetting = RuleValue[0] | RuleValue;
+const config = parseJson<{ rules: Record<string, RuleSetting>, overrides?: { files: string[], rules?: Record<string, RuleSetting> }[] }>(readFileSync(configPath, 'utf8'));
 const nativeRules = getNativeRules();
 
-const normalize = (value) => (Array.isArray(value) ? value : [value]);
+const normalize = (value: RuleSetting): RuleValue => (Array.isArray(value) ? value : [value]);
 
 // Our own (simplified) resolution of oxlintrc.json for a file, because `oxlint --print-config` omits JS plugin rules
-function getOxlintRules(file) {
+function getOxlintRules(file: string) {
   const merged = { ...config.rules };
   const overrides = config.overrides ?? [];
   for (const override of overrides) {
     if (override.files.some((glob) => matchesGlob(file, glob))) Object.assign(merged, override.rules ?? {});
   }
-  return Object.fromEntries(Object.entries(merged).map(([name, value]) => [name, normalize(value)]).filter(([, [severity]]) => severity !== 'off'));
+  return Object.fromEntries(Object.entries(merged).map(([name, value]): [string, RuleValue] => [name, normalize(value)]).filter(([, [severity]]) => severity !== 'off'));
 }
 
 test('oxlint accepts the config (rule names and options are validated)', () => {
@@ -48,13 +51,15 @@ test('dropped rules exist in the legacy config', () => {
   for (const name of Object.keys(dropped)) assert.ok(legacy.has(name), `${name} is no longer in the legacy config`);
 });
 
-test('JS plugins get the legacy settings', async () => {
+test('JS plugins get the legacy settings', () => {
   // import/parsers and import/ignore are only used by the rules that parse other modules, which we dropped
-  const { 'import/resolver': legacyResolver, ...legacySettings } = Object.fromEntries(Object.entries(getLegacyConfig('ts').settings).filter(([key]) => key.startsWith('import/') && !['import/parsers', 'import/ignore'].includes(key)));
+  const { 'import/resolver': legacyResolver, ...legacySettings } = getLegacyConfig('ts').settings;
   // eslint-plugin-import-x reads its settings from import-x/* instead of import/*
-  const importXSettings = (await import('../plugins/import.js')).default.defaultSettings;
-  const { 'import/resolver': resolver, ...settings } = Object.fromEntries(Object.entries(importXSettings).map(([key, value]) => [key.replace(/^import-x\//, 'import/'), value]));
-  assert.deepEqual(settings, legacySettings);
+  const { 'import-x/resolver': resolver, ...settings } = importPlugin.defaultSettings;
+  assert.deepEqual(
+    Object.fromEntries(Object.entries(settings).map(([key, value]) => [key.replace(/^import-x\//, 'import/'), value])),
+    Object.fromEntries(Object.entries(legacySettings).filter(([key]) => key.startsWith('import/') && !['import/parsers', 'import/ignore'].includes(key))),
+  );
   // the legacy resolver extensions lacked .tsx, .mts and .cts (and had duplicates)
   for (const ext of legacyResolver.node.extensions) assert.ok(resolver.node.extensions.includes(ext), ext);
 });

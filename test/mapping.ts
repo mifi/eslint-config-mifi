@@ -7,17 +7,34 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import stylistic from '@stylistic/eslint-plugin';
+import { builtinRules } from 'eslint/use-at-your-own-risk';
 import unicorn from 'eslint-plugin-unicorn';
 
-const require = createRequire(import.meta.url);
+// eslint-disable-next-line typescript/no-unsafe-return, typescript/no-unnecessary-type-parameters -- for JSON from trusted sources (our own config and tools)
+export const parseJson = <T>(text: string): T => JSON.parse(text);
 
 export const oxlintBin = fileURLToPath(new URL('../node_modules/.bin/oxlint', import.meta.url));
+
+type Severity = 'off' | 'warn' | 'error';
+// [severity, ...options]
+export type RuleValue = [Severity, ...unknown[]];
+type Settings = Record<string, unknown>;
+export interface LegacyConfig {
+  rules: Record<string, RuleValue>;
+  settings: Settings & { 'import/resolver': { node: { extensions: string[] } } };
+}
+
+const isObject = (value: unknown): value is Record<string, unknown> => value != null && typeof value === 'object' && !Array.isArray(value);
+const asObject = (value: unknown) => (isObject(value) ? value : {});
+const toArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : [value]);
+const omit = (object: unknown, keys: string[]) => Object.fromEntries(Object.entries(asObject(object)).filter(([key]) => !keys.includes(key)));
 
 const jsOnly = 'Only relevant for JavaScript (TypeScript checks this, or it is about prop-types/CommonJS)';
 const deprecated = 'Deprecated upstream, and no longer considered good practice';
 
 // Rules from the legacy config that we intentionally do not carry over
-export const dropped = {
+export const dropped: Record<string, string> = {
   'react-hooks/config': 'Only validates React Compiler configuration, which we don\'t pass to the linter',
   'react-hooks/gating': 'Only validates React Compiler gating configuration, which we don\'t pass to the linter',
   'no-return-await': `${deprecated}: \`return await\` is not slower and gives better stack traces`,
@@ -53,11 +70,14 @@ export const dropped = {
     'react/jsx-uses-vars',
     // syntax errors in ES modules and TypeScript
     'no-octal', 'no-octal-escape', 'no-dupe-args', 'no-new-symbol',
+    // checked by TypeScript (turned off for TS files by typescript-eslint's eslint-recommended config)
+    'constructor-super', 'getter-return', 'no-class-assign', 'no-const-assign', 'no-dupe-class-members', 'no-dupe-keys', 'no-func-assign',
+    'no-import-assign', 'no-obj-calls', 'no-redeclare', 'no-setter-return', 'no-this-before-super', 'no-undef', 'no-unreachable', 'no-unsafe-negation', 'no-with',
   ].map((rule) => [rule, jsOnly])),
 };
 
 // Rules from the legacy config that are replaced by their native successor
-export const replaced = {
+export const replaced: Record<string, { by: string, reason: string }> = {
   'consistent-return': { by: 'typescript/consistent-return', reason: 'The native, type-aware version (understands void)' },
   'no-new-object': { by: 'no-object-constructor', reason: `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)` },
   // eslint-plugin-react isn't maintained anymore (and doesn't support ESLint 10), @eslint-react is
@@ -67,8 +87,8 @@ export const replaced = {
 };
 
 // Rules that are not in the legacy config, but recommended upstream (since airbnb was abandoned), and cause few changes in our projects
-const fromConfigs = (source, rules) => Object.fromEntries(rules.map((rule) => [rule, source]));
-export const added = {
+const fromConfigs = (source: string, rules: string[]) => Object.fromEntries(rules.map((rule) => [rule, source]));
+export const added: Record<string, string> = {
   ...fromConfigs('eslint recommended', ['no-unassigned-vars', 'no-useless-assignment', 'preserve-caught-error']),
   ...fromConfigs('unicorn recommended', [
     'unicorn/consistent-date-clone', 'unicorn/consistent-template-literal-escape', 'unicorn/explicit-timer-delay', 'unicorn/no-accessor-recursion', 'unicorn/no-array-fill-with-reference-type',
@@ -182,7 +202,8 @@ export const added = {
     'vitest/require-awaited-expect-poll', 'vitest/require-local-test-context-for-concurrent-snapshots', 'vitest/require-mock-type-parameters',
     'vitest/require-to-throw-message', 'vitest/valid-describe-callback', 'vitest/valid-expect', 'vitest/valid-expect-in-promise', 'vitest/valid-title',
     'vitest/warn-todo', 'oxc/no-accumulating-spread', 'oxc/no-map-spread', 'react/iframe-missing-sandbox', 'react/no-object-type-as-default-prop',
-    'react/exhaustive-effect-dependencies', 'react/hooks', 'react/memo-dependencies', 'react/no-deriving-state-in-effects', 'no-unmodified-loop-condition', 'unicorn/require-post-message-target-origin', 'oxc/no-async-endpoint-handlers', 'jsx-a11y/prefer-tag-over-role',
+    'react/exhaustive-effect-dependencies', 'react/hooks', 'react/memo-dependencies', 'react/no-deriving-state-in-effects', 'no-unmodified-loop-condition',
+    'unicorn/require-post-message-target-origin', 'oxc/no-async-endpoint-handlers', 'jsx-a11y/prefer-tag-over-role',
   ]),
   // the rest of oxlint's correctness and suspicious rules, and the pedantic, style and restriction rules that fit (few findings, not opinionated
   // about layout or naming). Some of them replace slower JS plugin rules:
@@ -220,7 +241,7 @@ export const added = {
 };
 
 // Options changed from the legacy config (to what oxlint's native rule accepts, or to be stricter), keyed by legacy rule name
-const adaptedOptions = {
+const adaptedOptions: Record<string, { reason: string, adapt: (value: RuleValue) => RuleValue }> = {
   '@typescript-eslint/consistent-type-assertions': {
     reason: 'stricter: type assertions are unchecked, so avoid them (use a disable comment where one is really needed)',
     adapt: ([severity]) => [severity, { assertionStyle: 'never' }],
@@ -231,30 +252,36 @@ const adaptedOptions = {
   },
   'no-param-reassign': {
     reason: 'also allow mutating `draft` (immer)',
-    adapt: ([severity, { ignorePropertyModificationsFor, ...rest }]) => [severity, { ...rest, ignorePropertyModificationsFor: [...ignorePropertyModificationsFor, 'draft'] }],
+    adapt: ([severity, options]) => {
+      const { ignorePropertyModificationsFor } = asObject(options);
+      return [severity, { ...asObject(options), ignorePropertyModificationsFor: [...toArray(ignorePropertyModificationsFor ?? []), 'draft'] }];
+    },
   },
   indent: {
     reason: '@stylistic/indent handles JSX (it replaces the deprecated jsx-indent), so don\'t ignore JSX nodes',
-    adapt: ([severity, size, { ignoredNodes, ...rest }]) => [severity, size, { ...rest, ignoredNodes: ignoredNodes.filter((node) => !node.startsWith('JSX')) }],
+    adapt: ([severity, size, options]) => {
+      const { ignoredNodes } = asObject(options);
+      return [severity, size, { ...asObject(options), ignoredNodes: toArray(ignoredNodes ?? []).filter((node) => typeof node === 'string' && !node.startsWith('JSX')) }];
+    },
   },
   'object-property-newline': {
     reason: '@stylistic removed the deprecated allowMultiplePropertiesPerLine alias (false, i.e. not set)',
-    adapt: ([severity, options]) => [severity, Object.fromEntries(Object.entries(options).filter(([key]) => key !== 'allowMultiplePropertiesPerLine'))],
+    adapt: ([severity, options]) => [severity, omit(options, ['allowMultiplePropertiesPerLine'])],
   },
   'import/no-cycle': {
     reason: 'oxlint wants maxDepth as a number (unlimited is the default anyway) and has no disableScc (a perf option). eslint-plugin-import always ignores type imports',
-    adapt: ([severity, options]) => [severity, { ...Object.fromEntries(Object.entries(options).filter(([key]) => !['maxDepth', 'disableScc'].includes(key))), ignoreTypes: true }],
+    adapt: ([severity, options]) => [severity, { ...omit(options, ['maxDepth', 'disableScc']), ignoreTypes: true }],
   },
 };
 
 // ESLint plugin name -> oxlint native plugin name (oxlint folds react-hooks into react)
-const nativePlugins = { '': '', '@typescript-eslint': 'typescript', react: 'react', 'react-hooks': 'react', import: 'import', unicorn: 'unicorn', 'jsx-a11y': 'jsx-a11y' };
+const nativePlugins: Record<string, string> = { '': '', '@typescript-eslint': 'typescript', react: 'react', 'react-hooks': 'react', import: 'import', unicorn: 'unicorn', 'jsx-a11y': 'jsx-a11y' };
 
 // ESLint plugin name -> alias of the same (or forked) ESLint plugin loaded as an oxlint JS plugin (native plugin names are reserved).
 // import-js is eslint-plugin-import-x (the maintained fork of eslint-plugin-import)
-const jsPluginAliases = { '': 'eslint-js', import: 'import-js', unicorn: 'unicorn-js' };
+const jsPluginAliases: Record<string, string> = { '': 'eslint-js', import: 'import-js', unicorn: 'unicorn-js' };
 
-const splitRuleName = (name) => {
+const splitRuleName = (name: string): [string, string] => {
   const i = name.lastIndexOf('/');
   return i === -1 ? ['', name] : [name.slice(0, i), name.slice(i + 1)];
 };
@@ -263,44 +290,52 @@ export const extensions = ['js', 'cjs', 'mjs', 'jsx', 'ts', 'tsx', 'mts', 'cts']
 
 const legacyDir = new URL('../legacy/', import.meta.url);
 
-const severities = { 0: 'off', 1: 'warn', 2: 'error' };
+const severities: Record<string, Severity> = { 0: 'off', 1: 'warn', 2: 'error' };
 
-const legacyConfigs = new Map();
+const legacyConfigs = new Map<string, LegacyConfig>();
 
-function loadLegacyConfig(ext) {
-  const config = JSON.parse(execFileSync('node_modules/.bin/eslint', ['--no-eslintrc', '-c', 'eslintrc.cjs', '--print-config', `file.${ext}`], { cwd: legacyDir, encoding: 'utf8' }));
-  const rules = Object.fromEntries(Object.entries(config.rules).flatMap(([name, value]) => {
-    const [severity, ...options] = Array.isArray(value) ? value : [value];
-    const normalized = severities[severity] ?? severity;
-    return normalized === 'off' ? [] : [[name, [normalized, ...options]]];
-  }));
+function loadLegacyConfig(ext: string): LegacyConfig {
+  const config = parseJson<{ rules: Record<string, unknown>, settings: LegacyConfig['settings'] }>(execFileSync('node_modules/.bin/eslint', ['--no-eslintrc', '-c', 'eslintrc.cjs', '--print-config', `file.${ext}`], { cwd: legacyDir, encoding: 'utf8' }));
+  const rules: Record<string, RuleValue> = {};
+  for (const [name, value] of Object.entries(config.rules)) {
+    const [severity, ...options] = toArray(value);
+    const normalized = severities[String(severity)] ?? severity;
+    if (normalized === 'warn' || normalized === 'error') rules[name] = [normalized, ...options];
+  }
   return { ...config, rules };
 }
 
 // Effective config of the legacy ESLint config for a file with the given extension, with only enabled rules (normalized to [severity, ...options])
-export function getLegacyConfig(ext) {
-  if (!legacyConfigs.has(ext)) legacyConfigs.set(ext, loadLegacyConfig(ext));
-  return legacyConfigs.get(ext);
+export function getLegacyConfig(ext: string) {
+  let config = legacyConfigs.get(ext);
+  if (!config) {
+    config = loadLegacyConfig(ext);
+    legacyConfigs.set(ext, config);
+  }
+  return config;
 }
 
 export function getNativeRules() {
   // with an empty config, so that it doesn't depend on (or fail because of) our own config
   const emptyConfig = join(mkdtempSync(`${tmpdir()}/oxlint-`), '.oxlintrc.json');
   writeFileSync(emptyConfig, '{}');
-  const rules = JSON.parse(execFileSync(oxlintBin, ['-c', emptyConfig, '--rules', '--format=json'], { encoding: 'utf8' }));
+  const rules = parseJson<{ scope: string, value: string }[]>(execFileSync(oxlintBin, ['-c', emptyConfig, '--rules', '--format=json'], { encoding: 'utf8' }));
   return new Set(rules.map(({ scope, value }) => (scope === 'eslint' ? value : `${scope.replaceAll('_', '-')}/${value}`)));
 }
 
 // @stylistic renamed some of ESLint's core formatting rules
-const stylisticRenames = { 'func-call-spacing': 'function-call-spacing' };
-const stylisticRules = new Set(Object.keys(require('@stylistic/eslint-plugin').rules));
-const ruleMetas = {
-  '': require('eslint/use-at-your-own-risk').builtinRules,
-  react: new Map(Object.entries(createRequire(legacyDir)('eslint-plugin-react').rules)),
-  unicorn: new Map(Object.entries(unicorn.rules)),
+const stylisticRenames: Record<string, string> = { 'func-call-spacing': 'function-call-spacing' };
+const stylisticRules = new Set(Object.keys(stylistic.rules));
+const requireLegacy = (id: string): unknown => createRequire(legacyDir)(id);
+const reactPlugin = asObject(requireLegacy('eslint-plugin-react'));
+const ruleMetas: Record<string, ReadonlyMap<string, unknown>> = {
+  // eslint-disable-next-line typescript/no-deprecated -- ESLint has no other API that lists its core rules
+  '': builtinRules,
+  react: new Map(Object.entries(asObject(reactPlugin.rules))),
+  unicorn: new Map(Object.entries(unicorn.rules ?? {})),
 };
 
-function toOxlintRuleName(eslintName, nativeRules) {
+function toOxlintRuleName(eslintName: string, nativeRules: Set<string>) {
   const [plugin, rule] = splitRuleName(eslintName);
 
   const nativePlugin = nativePlugins[plugin];
@@ -318,7 +353,7 @@ function toOxlintRuleName(eslintName, nativeRules) {
   if (['', 'react'].includes(plugin) && stylisticRules.has(stylisticRule)) return `@stylistic/${stylisticRule}`;
 
   const alias = jsPluginAliases[plugin];
-  if (alias) return `${alias}/${rule}`;
+  if (alias != null) return `${alias}/${rule}`;
   throw new Error(`No oxlint equivalent for ${eslintName}`);
 }
 
@@ -331,16 +366,17 @@ const notFormatting = new Set([
 ]);
 
 // Only formatting rules (the ones that moved to @stylistic, or of the layout type) are warnings, so that they stand out from real problems
-function isFormatting(eslintName) {
+function isFormatting(eslintName: string) {
   if (notFormatting.has(eslintName)) return false;
   const [plugin, rule] = splitRuleName(eslintName);
-  return (['', 'react'].includes(plugin) && stylisticRules.has(rule)) || ruleMetas[plugin]?.get(rule)?.meta?.type === 'layout';
+  return (['', 'react'].includes(plugin) && stylisticRules.has(rule)) || asObject(asObject(ruleMetas[plugin]?.get(rule)).meta).type === 'layout';
 }
 
 // Returns the expected oxlint [name, [severity, ...options]] for a legacy ESLint rule, or undefined if dropped
-export function toOxlintRule(eslintName, [, ...options], nativeRules) {
+export function toOxlintRule(eslintName: string, [, ...options]: RuleValue, nativeRules: Set<string>): [string, RuleValue] | undefined {
   if (Object.hasOwn(dropped, eslintName)) return undefined;
-  if (Object.hasOwn(replaced, eslintName)) return [replaced[eslintName].by, ['error']];
-  const value = [isFormatting(eslintName) ? 'warn' : 'error', ...options];
+  const replacement = replaced[eslintName];
+  if (replacement) return [replacement.by, ['error']];
+  const value: RuleValue = [isFormatting(eslintName) ? 'warn' : 'error', ...options];
   return [toOxlintRuleName(eslintName, nativeRules), adaptedOptions[eslintName]?.adapt(value) ?? value];
 }

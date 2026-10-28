@@ -27,7 +27,8 @@
   },
   "scripts": {
     "test": "node --test",
-    "lint": "oxlint --deny-warnings"
+    "lint": "oxlint --type-aware --deny-warnings",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@eslint-react/eslint-plugin": "^5.28.8",
@@ -47,6 +48,7 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^22",
     "oxlint": "^1.89.0",
     "oxlint-tsgolint": "^7.0.2005",
     "typescript": "~6.0.3"

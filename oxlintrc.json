@@ -573,7 +573,6 @@
         "enforceForClassFields": true
       }
     ],
-    "constructor-super": "error",
     "curly": [
       "error",
       "multi-line"
@@ -614,12 +613,6 @@
     "eslint-js/no-undef-init": "error",
     "for-direction": "error",
     "func-names": "error",
-    "getter-return": [
-      "error",
-      {
-        "allowImplicit": true
-      }
-    ],
     "grouped-accessor-pairs": "error",
     "guard-for-in": "error",
     "import-js/no-extraneous-dependencies": [
@@ -971,23 +964,19 @@
     "no-bitwise": "error",
     "no-caller": "error",
     "no-case-declarations": "error",
-    "no-class-assign": "error",
     "no-compare-neg-zero": "error",
     "no-cond-assign": [
       "error",
       "always"
     ],
     "no-console": "error",
-    "no-const-assign": "error",
     "no-constant-binary-expression": "error",
     "no-constant-condition": "error",
     "no-constructor-return": "error",
     "no-control-regex": "error",
     "no-debugger": "error",
     "no-delete-var": "error",
-    "no-dupe-class-members": "error",
     "no-dupe-else-if": "error",
-    "no-dupe-keys": "error",
     "no-duplicate-case": "error",
     "no-else-return": [
       "error",
@@ -1007,7 +996,6 @@
     "no-extra-boolean-cast": "error",
     "no-extra-label": "error",
     "no-fallthrough": "error",
-    "no-func-assign": "error",
     "no-global-assign": [
       "error",
       {
@@ -1016,7 +1004,6 @@
     ],
     "no-implicit-coercion": "error",
     "no-implied-eval": "error",
-    "no-import-assign": "error",
     "no-inner-declarations": "error",
     "no-invalid-regexp": "error",
     "no-irregular-whitespace": "error",
@@ -1041,7 +1028,6 @@
     "no-new-native-nonconstructor": "error",
     "no-new-wrappers": "error",
     "no-nonoctal-decimal-escape": "error",
-    "no-obj-calls": "error",
     "no-object-constructor": "error",
     "no-param-reassign": [
       "error",
@@ -1067,7 +1053,6 @@
     "no-promise-executor-return": "error",
     "no-proto": "error",
     "no-prototype-builtins": "error",
-    "no-redeclare": "error",
     "no-regex-spaces": "error",
     "no-restricted-exports": [
       "error",
@@ -1211,15 +1196,12 @@
     ],
     "no-self-compare": "error",
     "no-sequences": "error",
-    "no-setter-return": "error",
     "no-shadow": "error",
     "no-shadow-restricted-names": "error",
     "no-sparse-arrays": "error",
     "no-template-curly-in-string": "error",
-    "no-this-before-super": "error",
     "no-throw-literal": "error",
     "no-unassigned-vars": "error",
-    "no-undef": "error",
     "no-underscore-dangle": [
       "error",
       {
@@ -1244,7 +1226,6 @@
         "defaultAssignment": false
       }
     ],
-    "no-unreachable": "error",
     "no-unreachable-loop": [
       "error",
       {
@@ -1252,7 +1233,6 @@
       }
     ],
     "no-unsafe-finally": "error",
-    "no-unsafe-negation": "error",
     "no-unsafe-optional-chaining": [
       "error",
       {
@@ -1290,7 +1270,6 @@
     "no-useless-return": "error",
     "no-var": "error",
     "no-void": "error",
-    "no-with": "error",
     "node/no-exports-assign": "error",
     "node/no-path-concat": "error",
     "object-shorthand": [
@@ -1574,7 +1553,23 @@
     "typescript/no-explicit-any": "error",
     "typescript/no-extra-non-null-assertion": "error",
     "typescript/no-extraneous-class": "error",
-    "typescript/no-floating-promises": "error",
+    "typescript/no-floating-promises": [
+      "error",
+      {
+        "allowForKnownSafeCalls": [
+          {
+            "from": "package",
+            "package": "node:test",
+            "name": [
+              "test",
+              "it",
+              "describe",
+              "suite"
+            ]
+          }
+        ]
+      }
+    ],
     "typescript/no-for-in-array": "error",
     "typescript/no-generated-empty-object-type": "error",
     "typescript/no-implied-eval": "error",
@@ -2216,29 +2211,6 @@
       "env": {
         "es2024": true,
         "node": true
-      }
-    },
-    {
-      "files": [
-        "**/*.{ts,tsx,mts,cts}"
-      ],
-      "rules": {
-        "constructor-super": "off",
-        "getter-return": "off",
-        "no-class-assign": "off",
-        "no-const-assign": "off",
-        "no-dupe-class-members": "off",
-        "no-dupe-keys": "off",
-        "no-func-assign": "off",
-        "no-import-assign": "off",
-        "no-obj-calls": "off",
-        "no-redeclare": "off",
-        "no-setter-return": "off",
-        "no-this-before-super": "off",
-        "no-undef": "off",
-        "no-unreachable": "off",
-        "no-unsafe-negation": "off",
-        "no-with": "off"
       }
     }
   ]
