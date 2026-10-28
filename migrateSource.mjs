@@ -6,6 +6,7 @@ const config = JSON.parse(readFileSync(new URL('oxlintrc.json', import.meta.url)
 
 // Rules that were replaced by their successor (see test/mapping.mjs)
 export const replacedRules = {
+  'consistent-return': 'typescript/consistent-return',
   'no-new-object': 'no-object-constructor',
   'react/no-unused-state': '@eslint-react/no-unused-state',
   'react/no-unused-class-component-methods': '@eslint-react/no-unused-class-component-members',

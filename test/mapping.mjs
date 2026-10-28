@@ -26,6 +26,13 @@ export const dropped = {
   'lines-around-directive': deprecated,
   'no-continue': 'Conflicts with unicorn/prefer-continue (an early `continue` is considered good style now)',
   'import/prefer-default-export': 'Not considered good practice anymore (named exports are easier to refactor and auto-import)',
+  'react/jsx-props-no-spreading': 'Not considered good practice anymore (spreading is how props are passed through, and TypeScript checks them)',
+  'no-buffer-constructor': `${deprecated}, typescript/no-deprecated flags \`new Buffer()\``,
+  'unicorn/no-array-push-push': `${deprecated}, replaced by unicorn/prefer-single-call`,
+  'unicorn/no-instanceof-array': `${deprecated}, replaced by unicorn/no-instanceof-builtins`,
+  'unicorn/no-length-as-slice-end': `${deprecated}, replaced by unicorn/no-unnecessary-slice-end`,
+  'unicorn/prefer-dom-node-dataset': `${deprecated}, replaced by unicorn/dom-node-dataset`,
+  'unicorn/no-hex-escape': `${deprecated}, replaced by unicorn/prefer-unicode-code-point-escapes (which conflicts with it)`,
   // eslint-plugin-react isn't maintained anymore (and doesn't support ESLint 10). Rules without a native or @eslint-react equivalent:
   'react/no-deprecated': 'Covered by typescript/no-deprecated (React\'s types mark deprecated APIs)',
   'react/no-typos': 'Mostly caught by TypeScript',
@@ -50,6 +57,7 @@ export const dropped = {
 
 // Rules from the legacy config that are replaced by their native successor
 export const replaced = {
+  'consistent-return': { by: 'typescript/consistent-return', reason: 'The native, type-aware version (understands void)' },
   'no-new-object': { by: 'no-object-constructor', reason: `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)` },
   // eslint-plugin-react isn't maintained anymore (and doesn't support ESLint 10), @eslint-react is
   'react/no-unused-state': { by: '@eslint-react/no-unused-state', reason: 'eslint-plugin-react -> @eslint-react' },
@@ -163,8 +171,18 @@ export const added = {
     '@eslint-react/web-api-no-leaked-event-listener', '@eslint-react/web-api-no-leaked-fetch', '@eslint-react/web-api-no-leaked-intersection-observer',
     '@eslint-react/web-api-no-leaked-interval', '@eslint-react/web-api-no-leaked-resize-observer', '@eslint-react/web-api-no-leaked-timeout',
     '@eslint-react/naming-convention-context-name', '@eslint-react/naming-convention-id-name', '@eslint-react/naming-convention-ref-name',
-    '@eslint-react/no-class-component', '@eslint-react/no-misused-capture-owner-stack', '@eslint-react/no-unstable-default-props',
-    '@eslint-react/dom-no-missing-iframe-sandbox',
+    '@eslint-react/no-class-component', '@eslint-react/no-misused-capture-owner-stack',
+
+  ]),
+  // native oxlint rules: the promise and vitest plugins (correctness and suspicious categories), oxc performance rules, and native
+  // versions of two @eslint-react rules (dom-no-missing-iframe-sandbox, no-unstable-default-props)
+  ...fromConfigs('oxlint', [
+    'promise/always-return', 'promise/no-callback-in-promise', 'promise/no-multiple-resolved', 'promise/no-new-statics', 'promise/no-promise-in-callback',
+    'promise/valid-params', 'vitest/expect-expect', 'vitest/hoisted-apis-on-top', 'vitest/no-commented-out-tests', 'vitest/no-conditional-expect',
+    'vitest/no-conditional-tests', 'vitest/no-disabled-tests', 'vitest/no-focused-tests', 'vitest/no-standalone-expect', 'vitest/prefer-snapshot-hint',
+    'vitest/require-awaited-expect-poll', 'vitest/require-local-test-context-for-concurrent-snapshots', 'vitest/require-mock-type-parameters',
+    'vitest/require-to-throw-message', 'vitest/valid-describe-callback', 'vitest/valid-expect', 'vitest/valid-expect-in-promise', 'vitest/valid-title',
+    'vitest/warn-todo', 'oxc/no-accumulating-spread', 'oxc/no-map-spread', 'react/iframe-missing-sandbox', 'react/no-object-type-as-default-prop',
   ]),
   // relative imports need explicit extensions when run without a bundler (e.g. Node's type stripping), like `./util.ts`
   'import/extensions': 'explicit extensions in relative imports',
@@ -180,6 +198,10 @@ const adaptedOptions = {
   'react/jsx-no-duplicate-props': {
     reason: 'oxlint\'s native rule doesn\'t support the ignoreCase option (props that only differ in case)',
     adapt: ([severity]) => [severity],
+  },
+  'no-param-reassign': {
+    reason: 'also allow mutating `draft` (immer)',
+    adapt: ([severity, { ignorePropertyModificationsFor, ...rest }]) => [severity, { ...rest, ignorePropertyModificationsFor: [...ignorePropertyModificationsFor, 'draft'] }],
   },
   'import/no-cycle': {
     reason: 'oxlint wants maxDepth as a number (unlimited is the default anyway) and has no disableScc (a perf option). eslint-plugin-import always ignores type imports',

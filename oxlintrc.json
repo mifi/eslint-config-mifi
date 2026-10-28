@@ -7,7 +7,10 @@
     "react",
     "jsx-a11y",
     "import",
-    "node"
+    "node",
+    "oxc",
+    "promise",
+    "vitest"
   ],
   "jsPlugins": [
     {
@@ -34,7 +37,6 @@
   "rules": {
     "@eslint-react/dom-no-flush-sync": "error",
     "@eslint-react/dom-no-hydrate": "error",
-    "@eslint-react/dom-no-missing-iframe-sandbox": "error",
     "@eslint-react/dom-no-render": "error",
     "@eslint-react/dom-no-unsafe-iframe-sandbox": "error",
     "@eslint-react/dom-no-use-form-state": "error",
@@ -66,12 +68,6 @@
     "@eslint-react/no-unsafe-component-will-mount": "error",
     "@eslint-react/no-unsafe-component-will-receive-props": "error",
     "@eslint-react/no-unsafe-component-will-update": "error",
-    "@eslint-react/no-unstable-default-props": [
-      "error",
-      {
-        "safeDefaultProps": []
-      }
-    ],
     "@eslint-react/no-unused-class-component-members": "error",
     "@eslint-react/no-unused-state": "error",
     "@eslint-react/no-use-context": "error",
@@ -282,7 +278,6 @@
       "warn",
       "never"
     ],
-    "eslint-js/consistent-return": "error",
     "eslint-js/dot-location": [
       "warn",
       "property"
@@ -399,7 +394,6 @@
       }
     ],
     "eslint-js/new-parens": "warn",
-    "eslint-js/no-buffer-constructor": "error",
     "eslint-js/no-confusing-arrow": [
       "warn",
       {
@@ -1080,7 +1074,8 @@
           "res",
           "response",
           "$scope",
-          "staticContext"
+          "staticContext",
+          "draft"
         ]
       }
     ],
@@ -1325,6 +1320,8 @@
       "error",
       "always"
     ],
+    "oxc/no-accumulating-spread": "error",
+    "oxc/no-map-spread": "error",
     "prefer-arrow-callback": [
       "error",
       {
@@ -1375,6 +1372,12 @@
     "prefer-spread": "error",
     "prefer-template": "error",
     "preserve-caught-error": "error",
+    "promise/always-return": "error",
+    "promise/no-callback-in-promise": "error",
+    "promise/no-multiple-resolved": "error",
+    "promise/no-new-statics": "error",
+    "promise/no-promise-in-callback": "error",
+    "promise/valid-params": "error",
     "radix": "error",
     "react/button-has-type": [
       "error",
@@ -1393,6 +1396,7 @@
     "react/error-boundaries": "error",
     "react/exhaustive-deps": "error",
     "react/globals": "error",
+    "react/iframe-missing-sandbox": "error",
     "react/immutability": "error",
     "react/incompatible-library": "error",
     "react/jsx-boolean-value": [
@@ -1454,15 +1458,6 @@
         "ignore": []
       }
     ],
-    "react/jsx-props-no-spreading": [
-      "error",
-      {
-        "html": "enforce",
-        "custom": "enforce",
-        "explicitSpread": "ignore",
-        "exceptions": []
-      }
-    ],
     "react/no-array-index-key": "error",
     "react/no-children-prop": "error",
     "react/no-danger": "error",
@@ -1472,6 +1467,7 @@
     "react/no-find-dom-node": "error",
     "react/no-is-mounted": "error",
     "react/no-namespace": "error",
+    "react/no-object-type-as-default-prop": "error",
     "react/no-redundant-should-component-update": "error",
     "react/no-render-return-value": "error",
     "react/no-string-refs": "error",
@@ -1516,6 +1512,7 @@
     "typescript/class-literal-property-style": "error",
     "typescript/consistent-generic-constructors": "error",
     "typescript/consistent-indexed-object-style": "error",
+    "typescript/consistent-return": "error",
     "typescript/consistent-type-assertions": [
       "error",
       {
@@ -1697,7 +1694,6 @@
     "unicorn-js/no-accidental-bitwise-operator": "error",
     "unicorn-js/no-array-concat-in-loop": "error",
     "unicorn-js/no-array-from-fill": "error",
-    "unicorn-js/no-array-push-push": "error",
     "unicorn-js/no-array-sort-for-min-max": "error",
     "unicorn-js/no-array-splice": "error",
     "unicorn-js/no-asterisk-prefix-in-documentation-comments": "warn",
@@ -2028,13 +2024,10 @@
     "unicorn/no-console-spaces": "error",
     "unicorn/no-document-cookie": "error",
     "unicorn/no-empty-file": "error",
-    "unicorn/no-hex-escape": "error",
     "unicorn/no-immediate-mutation": "error",
-    "unicorn/no-instanceof-array": "error",
     "unicorn/no-instanceof-builtins": "error",
     "unicorn/no-invalid-fetch-options": "error",
     "unicorn/no-invalid-remove-event-listener": "error",
-    "unicorn/no-length-as-slice-end": "error",
     "unicorn/no-lonely-if": "error",
     "unicorn/no-magic-array-flat-depth": "error",
     "unicorn/no-negation-in-equality-check": "error",
@@ -2079,7 +2072,6 @@
     "unicorn/prefer-date-now": "error",
     "unicorn/prefer-default-parameters": "error",
     "unicorn/prefer-dom-node-append": "error",
-    "unicorn/prefer-dom-node-dataset": "error",
     "unicorn/prefer-dom-node-remove": "error",
     "unicorn/prefer-dom-node-text-content": "error",
     "unicorn/prefer-event-target": "error",
@@ -2132,6 +2124,24 @@
       }
     ],
     "vars-on-top": "error",
+    "vitest/expect-expect": "error",
+    "vitest/hoisted-apis-on-top": "error",
+    "vitest/no-commented-out-tests": "error",
+    "vitest/no-conditional-expect": "error",
+    "vitest/no-conditional-tests": "error",
+    "vitest/no-disabled-tests": "error",
+    "vitest/no-focused-tests": "error",
+    "vitest/no-standalone-expect": "error",
+    "vitest/prefer-snapshot-hint": "error",
+    "vitest/require-awaited-expect-poll": "error",
+    "vitest/require-local-test-context-for-concurrent-snapshots": "error",
+    "vitest/require-mock-type-parameters": "error",
+    "vitest/require-to-throw-message": "error",
+    "vitest/valid-describe-callback": "error",
+    "vitest/valid-expect": "error",
+    "vitest/valid-expect-in-promise": "error",
+    "vitest/valid-title": "error",
+    "vitest/warn-todo": "error",
     "yoda": "error"
   },
   "overrides": [
