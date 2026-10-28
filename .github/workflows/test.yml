@@ -18,10 +18,18 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'yarn'
+          cache-dependency-path: |
+            yarn.lock
+            legacy/yarn.lock
 
       - run: yarn install --immutable
 
-      - name: Test
-        run: yarn test
+      # the legacy ESLint config is the reference for the parity tests
+      - run: yarn install --immutable
+        working-directory: legacy
+
+      - run: yarn lint
+
+      - run: yarn test

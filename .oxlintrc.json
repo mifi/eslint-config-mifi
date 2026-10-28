@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["./oxlintrc.json"],
+  "ignorePatterns": ["legacy", "test-fixtures"],
+  "rules": {
+    "no-console": "off"
+  },
+  "overrides": [
+    {
+      "files": ["test/**"],
+      "rules": {
+        "import-js/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+      }
+    }
+  ]
+}

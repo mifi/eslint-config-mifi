@@ -1,67 +1,89 @@
-# eslint-config-mifi
+# @mifi/lint-config
+
+mifi's [oxlint](https://oxc.rs/docs/guide/usage/linter) config, formerly [eslint-config-mifi](https://www.npmjs.com/package/eslint-config-mifi) (ESLint + `eslint-config-airbnb`).
+
+It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options, so it's just as strict. The exceptions are a few deprecated or JavaScript-only rules, plus some newer upstream-recommended rules, all listed in [test/mapping.mjs](test/mapping.mjs). This is verified by the [parity tests](test/parity.test.mjs) against a frozen copy of the old config in [legacy/](legacy/).
+
+Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins.html) using the original ESLint plugins, aliased because oxlint reserves the native plugin names:
+
+| Alias | Plugin |
+| --- | --- |
+| `eslint-js/*` | ESLint's core rules (e.g. the formatting rules) |
+| `react-js/*` | `eslint-plugin-react` |
+| `import-js/*` | `eslint-plugin-import` |
+| `unicorn-js/*` | `eslint-plugin-unicorn` |
+
+Formatting rules are warnings, so they stand out from real problems in the editor. Use `--deny-warnings` in CI.
 
 ## Installing
 
-Install the correct versions of each package, which are listed by the command:
-
 ```sh
-(
-  export PKG=eslint-config-mifi;
-  npm info "$PKG@latest" peerDependencies --json | command sed 's/[\{\},]//g ; s/: /@/g' | xargs yarn add -D "$PKG"
-)
+yarn add -D @mifi/lint-config oxlint oxlint-tsgolint
 ```
 
-See also [eslint-config-airbnb](https://www.npmjs.com/package/eslint-config-airbnb)
+`oxlint-tsgolint` is needed for the type-aware rules (`--type-aware`).
 
 ## Using
 
-```js
-// .eslintrc.js
-
-module.exports = {
-  extends: ['mifi'],
-
-  overrides: [
+```jsonc
+// .oxlintrc.json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["./node_modules/@mifi/lint-config/oxlintrc.json"],
+  // oxlint doesn't inherit settings from extended configs
+  "settings": {
+    "react": { "version": "19" }
+  },
+  "overrides": [
     // In react/web code
     {
-      files: ['./src/**/*.{js,mjs,cjs,mjs,jsx,ts,mts,tsx}'],
-      env: {
-        node: false,
-        browser: true,
-      },
+      "files": ["src/**"],
+      "env": { "node": false, "browser": true }
     },
-
     // In electron renderer, dependencies should be devDependencies (to prevent them from being included in the Electron ASAR package)
     {
-      files: ['./src/{renderer,preload}/**/*.{js,mjs,cjs,mjs,jsx,ts,mts,tsx}'],
-      env: {
-        node: false,
-        browser: true,
-      },
-      rules: {
-        'import/no-extraneous-dependencies': ['error', {
-          devDependencies: true,
-          optionalDependencies: false,
-        }],
-      },
-    },
-  ],
+      "files": ["src/{renderer,preload}/**"],
+      "env": { "node": false, "browser": true },
+      "rules": {
+        "import-js/no-extraneous-dependencies": ["error", { "devDependencies": true, "optionalDependencies": false }]
+      }
+    }
+  ]
 }
 ```
 
-## List effective rules
-
-```bash
-npx eslint --print-config test-fixtures/React.tsx
+```jsonc
+// package.json
+{
+  "scripts": {
+    "lint": "oxlint --type-aware --deny-warnings"
+  }
+}
 ```
 
-## TODO
+For VS Code, use the [oxc extension](https://marketplace.visualstudio.com/items?itemName=oxc.oxc-vscode) (enable `oxc.typeAware`).
 
-Integrate more rules:
+### Too many errors?
 
-- AirBnB typescript fixes: https://github.com/iamturns/eslint-config-airbnb-typescript/blob/8ef77c928c97d977f053c9c638831363a715d4a9/lib/shared.js#L31
-- https://github.com/eslint-community/eslint-plugin-n
-- https://github.com/eslint-community/eslint-plugin-security
+When a rule causes a lot of changes in your project, turn it off in your own `.oxlintrc.json` (and fix it later). When it only causes a few, but risky, changes, use disable comments on those lines.
+
+## Migrating from eslint-config-mifi
+
+1. Replace `eslint`, `eslint-config-mifi`, `@typescript-eslint/*` and `eslint-plugin-*` with the packages above.
+2. Move your `.eslintrc*` to `.oxlintrc.json` (see above), and `.eslintignore` to `ignorePatterns`. Note that oxlint doesn't ignore dotfiles (e.g. `.yarn/releases`) like ESLint does.
+3. Rename rules in your config that are now JS plugin rules (e.g. `import/no-extraneous-dependencies` -> `import-js/no-extraneous-dependencies`, see the table above).
+4. Rename them in your `eslint-disable` comments too (oxlint respects `eslint-disable` comments):
+   ```sh
+   npx mifi-lint-migrate
+   ```
+
+## Developing
+
+```sh
+yarn install
+(cd legacy && yarn install)
+yarn test
+```
 
 ## Releasing
 

@@ -1,0 +1,17 @@
+{
+  "name": "eslint-config-mifi-legacy",
+  "private": true,
+  "description": "Frozen copy of the last ESLint-based eslint-config-mifi (0.1.1), used as the reference for the parity tests",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-unicorn": "56.0.1",
+    "typescript": "~6.0.3"
+  }
+}
