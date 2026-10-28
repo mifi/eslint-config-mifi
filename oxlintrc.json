@@ -617,7 +617,6 @@
     "import/no-named-default": "error",
     "import/no-self-import": "error",
     "import/no-webpack-loader-syntax": "error",
-    "import/prefer-default-export": "error",
     "jsx-a11y/alt-text": [
       "error",
       {
@@ -884,7 +883,6 @@
     "no-constant-binary-expression": "error",
     "no-constant-condition": "error",
     "no-constructor-return": "error",
-    "no-continue": "error",
     "no-control-regex": "error",
     "no-debugger": "error",
     "no-delete-var": "error",
@@ -1509,6 +1507,8 @@
       }
     ],
     "typescript/consistent-type-definitions": "error",
+    "typescript/consistent-type-exports": "error",
+    "typescript/dot-notation": "error",
     "typescript/method-signature-style": [
       "error",
       "property"
@@ -1516,13 +1516,16 @@
     "typescript/no-array-delete": "error",
     "typescript/no-base-to-string": "error",
     "typescript/no-confusing-non-null-assertion": "error",
+    "typescript/no-confusing-void-expression": "error",
     "typescript/no-deprecated": "error",
     "typescript/no-duplicate-enum-values": "error",
+    "typescript/no-duplicate-type-constituents": "error",
     "typescript/no-dynamic-delete": "error",
     "typescript/no-empty-object-type": "error",
     "typescript/no-explicit-any": "error",
     "typescript/no-extra-non-null-assertion": "error",
     "typescript/no-extraneous-class": "error",
+    "typescript/no-floating-promises": "error",
     "typescript/no-for-in-array": "error",
     "typescript/no-generated-empty-object-type": "error",
     "typescript/no-implied-eval": "error",
@@ -1530,21 +1533,31 @@
     "typescript/no-invalid-void-type": "error",
     "typescript/no-meaningless-void-operator": "error",
     "typescript/no-misused-new": "error",
+    "typescript/no-misused-promises": "error",
     "typescript/no-misused-spread": "error",
     "typescript/no-mixed-enums": "error",
     "typescript/no-namespace": "error",
     "typescript/no-non-null-asserted-nullish-coalescing": "error",
     "typescript/no-non-null-asserted-optional-chain": "error",
+    "typescript/no-redundant-type-constituents": "error",
     "typescript/no-require-imports": "error",
     "typescript/no-this-alias": "error",
+    "typescript/no-unnecessary-boolean-literal-compare": "error",
+    "typescript/no-unnecessary-condition": "error",
     "typescript/no-unnecessary-template-expression": "error",
     "typescript/no-unnecessary-type-arguments": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
     "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-unnecessary-type-conversion": "error",
     "typescript/no-unnecessary-type-parameters": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
     "typescript/no-unsafe-call": "error",
     "typescript/no-unsafe-declaration-merging": "error",
     "typescript/no-unsafe-enum-comparison": "error",
     "typescript/no-unsafe-function-type": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
     "typescript/no-unsafe-unary-minus": "error",
     "typescript/no-useless-default-assignment": "error",
     "typescript/no-wrapper-object-types": "error",
@@ -1557,26 +1570,416 @@
     "typescript/prefer-includes": "error",
     "typescript/prefer-literal-enum-member": "error",
     "typescript/prefer-namespace-keyword": "error",
+    "typescript/prefer-nullish-coalescing": "error",
+    "typescript/prefer-optional-chain": "error",
     "typescript/prefer-promise-reject-errors": "error",
+    "typescript/prefer-readonly": "error",
     "typescript/prefer-reduce-type-parameter": "error",
+    "typescript/prefer-regexp-exec": "error",
     "typescript/prefer-return-this-type": "error",
     "typescript/prefer-string-starts-ends-with": "error",
     "typescript/related-getter-setter-pairs": "error",
+    "typescript/require-await": "error",
     "typescript/restrict-plus-operands": "error",
+    "typescript/restrict-template-expressions": "error",
     "typescript/return-await": "error",
+    "typescript/strict-boolean-expressions": "error",
+    "typescript/switch-exhaustiveness-check": "error",
     "typescript/triple-slash-reference": "error",
+    "typescript/unbound-method": "error",
     "typescript/unified-signatures": "error",
     "typescript/use-unknown-in-catch-callback-variable": "error",
     "unicode-bom": [
       "warn",
       "never"
     ],
+    "unicorn-js/better-dom-traversing": "error",
+    "unicorn-js/class-reference-in-static-methods": [
+      "error",
+      {
+        "preferThis": true,
+        "preferSuper": true
+      }
+    ],
+    "unicorn-js/consistent-boolean-name": [
+      "error",
+      {
+        "checkVariables": "always",
+        "checkArguments": "always",
+        "checkFunctions": "always",
+        "checkMethods": "never",
+        "checkFields": "never",
+        "ignore": [],
+        "wrappers": {}
+      }
+    ],
+    "unicorn-js/consistent-class-member-order": [
+      "error",
+      {
+        "order": [
+          "static-field",
+          "static-block",
+          "static-method",
+          "private-field",
+          "public-field",
+          "constructor",
+          "private-method",
+          "public-method"
+        ]
+      }
+    ],
+    "unicorn-js/consistent-compound-words": [
+      "error",
+      {}
+    ],
+    "unicorn-js/consistent-conditional-object-spread": [
+      "error",
+      "logical"
+    ],
+    "unicorn-js/consistent-export-decorator-position": [
+      "error",
+      "above"
+    ],
+    "unicorn-js/consistent-json-file-read": [
+      "error",
+      "string"
+    ],
+    "unicorn-js/consistent-optional-chaining": "error",
+    "unicorn-js/consistent-tuple-labels": "error",
+    "unicorn-js/default-export-style": [
+      "error",
+      {
+        "functions": "inline",
+        "classes": "inline"
+      }
+    ],
+    "unicorn-js/dom-node-dataset": [
+      "error",
+      {
+        "preferAttributes": false
+      }
+    ],
     "unicorn-js/expiring-todo-comments": "error",
+    "unicorn-js/isolated-functions": [
+      "error",
+      {
+        "functions": [
+          "makeSynchronous",
+          "workerize"
+        ],
+        "selectors": [],
+        "comments": [
+          "@isolated"
+        ],
+        "overrideGlobals": {}
+      }
+    ],
+    "unicorn-js/logical-assignment-operators": [
+      "error",
+      "always"
+    ],
+    "unicorn-js/no-accidental-bitwise-operator": "error",
+    "unicorn-js/no-array-concat-in-loop": "error",
+    "unicorn-js/no-array-from-fill": "error",
     "unicorn-js/no-array-push-push": "error",
+    "unicorn-js/no-array-sort-for-min-max": "error",
+    "unicorn-js/no-array-splice": "error",
+    "unicorn-js/no-asterisk-prefix-in-documentation-comments": "warn",
+    "unicorn-js/no-async-iterator-callback": "error",
+    "unicorn-js/no-async-promise-finally": "error",
+    "unicorn-js/no-blob-to-file": "error",
+    "unicorn-js/no-boolean-sort-comparator": "error",
+    "unicorn-js/no-break-in-nested-loop": [
+      "error",
+      {
+        "checkContinue": false
+      }
+    ],
+    "unicorn-js/no-canvas-to-image": "error",
+    "unicorn-js/no-chained-comparison": "error",
+    "unicorn-js/no-collection-bracket-access": "error",
+    "unicorn-js/no-computed-property-existence-check": "error",
+    "unicorn-js/no-conflicting-constraints": "error",
+    "unicorn-js/no-confusing-array-splice": "error",
+    "unicorn-js/no-constant-zero-expression": "error",
+    "unicorn-js/no-declarations-before-early-exit": "error",
+    "unicorn-js/no-double-comparison": "error",
+    "unicorn-js/no-duplicate-if-branches": "error",
+    "unicorn-js/no-duplicate-logical-operands": "error",
+    "unicorn-js/no-duplicate-loops": "error",
+    "unicorn-js/no-duplicate-set-values": "error",
+    "unicorn-js/no-error-property-assignment": "error",
+    "unicorn-js/no-exports-in-scripts": "error",
     "unicorn-js/no-for-loop": "error",
+    "unicorn-js/no-global-object-property-assignment": "error",
+    "unicorn-js/no-impossible-length-comparison": "error",
+    "unicorn-js/no-incomplete-accessor-override": "error",
+    "unicorn-js/no-incorrect-query-selector": "error",
+    "unicorn-js/no-incorrect-template-string-interpolation": "error",
+    "unicorn-js/no-ineffective-csp-directives": "error",
+    "unicorn-js/no-invalid-argument-count": [
+      "error",
+      {}
+    ],
+    "unicorn-js/no-invalid-boolean-attribute-value": "error",
+    "unicorn-js/no-invalid-character-comparison": "error",
+    "unicorn-js/no-invalid-dom-token": "error",
+    "unicorn-js/no-invalid-integrity": "error",
+    "unicorn-js/no-invalid-intl-options": "error",
+    "unicorn-js/no-invalid-property-descriptor": "error",
+    "unicorn-js/no-invalid-response-options": "error",
+    "unicorn-js/no-invalid-style-set-property": "error",
+    "unicorn-js/no-invalid-temporal-arithmetic": "error",
+    "unicorn-js/no-invalid-url-protocol-comparison": "error",
+    "unicorn-js/no-invalid-well-known-symbol-methods": "error",
+    "unicorn-js/no-late-current-target-access": "error",
+    "unicorn-js/no-late-event-control": "error",
+    "unicorn-js/no-leading-empty-lines": "warn",
+    "unicorn-js/no-loop-iterable-mutation": "error",
+    "unicorn-js/no-mismatched-map-key": "error",
+    "unicorn-js/no-misrefactored-assignment": "error",
+    "unicorn-js/no-multiple-promise-resolver-calls": "error",
+    "unicorn-js/no-named-default": "error",
+    "unicorn-js/no-negated-array-predicate": "error",
+    "unicorn-js/no-negated-comparison": [
+      "error",
+      {
+        "checkLogicalExpressions": false
+      }
+    ],
+    "unicorn-js/no-non-function-verb-prefix": [
+      "error",
+      {
+        "verbs": [
+          "get",
+          "set",
+          "unset",
+          "delete",
+          "add",
+          "remove",
+          "destroy",
+          "create"
+        ],
+        "ignore": []
+      }
+    ],
+    "unicorn-js/no-nonstandard-builtin-properties": "error",
+    "unicorn-js/no-object-methods-with-collections": "error",
+    "unicorn-js/no-optional-chaining-on-undeclared-variable": "error",
+    "unicorn-js/no-prevent-default-in-passive-listener": "error",
+    "unicorn-js/no-redundant-comparison": "error",
+    "unicorn-js/no-return-array-push": "error",
+    "unicorn-js/no-selector-as-dom-name": "error",
+    "unicorn-js/no-shorthand-property-overrides": "error",
+    "unicorn-js/no-subtraction-comparison": "error",
+    "unicorn-js/no-this-outside-of-class": "error",
+    "unicorn-js/no-top-level-assignment-in-function": "error",
+    "unicorn-js/no-top-level-side-effects": [
+      "error",
+      {
+        "allow": {},
+        "checkUnknownCalls": false
+      }
+    ],
+    "unicorn-js/no-transition-all": "error",
+    "unicorn-js/no-uncalled-method": "error",
+    "unicorn-js/no-undeclared-class-members": "error",
+    "unicorn-js/no-unnecessary-array-flat-map": "error",
+    "unicorn-js/no-unnecessary-boolean-comparison": "error",
+    "unicorn-js/no-unnecessary-fetch-options": "error",
+    "unicorn-js/no-unnecessary-global-this": "error",
+    "unicorn-js/no-unnecessary-nested-ternary": "error",
+    "unicorn-js/no-unnecessary-parameters": [
+      "error",
+      {
+        "minimumCallCount": 2
+      }
+    ],
     "unicorn-js/no-unnecessary-polyfills": "error",
+    "unicorn-js/no-unnecessary-splice": "error",
+    "unicorn-js/no-unnecessary-string-trim": "error",
+    "unicorn-js/no-unreadable-for-of-expression": "error",
+    "unicorn-js/no-unreadable-object-destructuring": "error",
+    "unicorn-js/no-unsafe-buffer-conversion": "error",
+    "unicorn-js/no-unsafe-json-serialization": "error",
+    "unicorn-js/no-unsafe-promise-all-settled-values": "error",
+    "unicorn-js/no-unsafe-property-key": "error",
+    "unicorn-js/no-unsafe-sqlite-interpolation": "error",
+    "unicorn-js/no-unsafe-string-replacement": "error",
+    "unicorn-js/no-unused-builtin-method-return": "error",
+    "unicorn-js/no-unused-iterator-helper": "error",
+    "unicorn-js/no-url-in-search-params": "error",
+    "unicorn-js/no-useless-boolean-cast": "error",
+    "unicorn-js/no-useless-coercion": "error",
+    "unicorn-js/no-useless-compound-assignment": "error",
+    "unicorn-js/no-useless-concat": "error",
+    "unicorn-js/no-useless-continue": "error",
+    "unicorn-js/no-useless-delete-check": "error",
+    "unicorn-js/no-useless-else": "error",
+    "unicorn-js/no-useless-logical-operand": "error",
+    "unicorn-js/no-useless-override": "error",
+    "unicorn-js/no-useless-re-export": "error",
+    "unicorn-js/no-useless-recursion": "error",
+    "unicorn-js/no-useless-set-construction": "error",
+    "unicorn-js/no-useless-template-literals": "error",
+    "unicorn-js/no-using-resource-escape": "error",
+    "unicorn-js/no-xor-as-exponentiation": "error",
+    "unicorn-js/operator-assignment": [
+      "error",
+      "always"
+    ],
+    "unicorn-js/prefer-abort-signal-any": "error",
+    "unicorn-js/prefer-abort-signal-timeout": "error",
+    "unicorn-js/prefer-add-event-listener-options": "error",
+    "unicorn-js/prefer-aggregate-error": "error",
+    "unicorn-js/prefer-array-from-async": "error",
+    "unicorn-js/prefer-array-from-map": "error",
+    "unicorn-js/prefer-array-from-range": "error",
+    "unicorn-js/prefer-array-iterable-methods": "error",
+    "unicorn-js/prefer-array-last-methods": "error",
+    "unicorn-js/prefer-array-slice": "error",
+    "unicorn-js/prefer-await": "error",
+    "unicorn-js/prefer-block-statement-over-iife": "error",
+    "unicorn-js/prefer-boolean-return": "error",
+    "unicorn-js/prefer-combined-guards": [
+      "error",
+      {
+        "checkCompoundConditions": false,
+        "checkMultiStatementBodies": false
+      }
+    ],
+    "unicorn-js/prefer-continue": [
+      "error",
+      {
+        "maximumStatements": 1,
+        "checkShortBodies": false
+      }
+    ],
+    "unicorn-js/prefer-direct-iteration": "error",
+    "unicorn-js/prefer-dom-node-html-methods": [
+      "error",
+      {
+        "checkGetHTML": true,
+        "checkSetHTML": false
+      }
+    ],
+    "unicorn-js/prefer-dom-node-replace-children": "error",
+    "unicorn-js/prefer-early-return": [
+      "error",
+      {
+        "maximumStatements": 1,
+        "checkShortBodies": false
+      }
+    ],
+    "unicorn-js/prefer-else-if": "error",
+    "unicorn-js/prefer-escaped-irregular-whitespace": "error",
+    "unicorn-js/prefer-flat-math-min-max": "error",
+    "unicorn-js/prefer-get-or-insert-computed": "error",
+    "unicorn-js/prefer-global-number-constants": "error",
+    "unicorn-js/prefer-group-by": "error",
+    "unicorn-js/prefer-has-check": "error",
+    "unicorn-js/prefer-hoisting-branch-code": "error",
+    "unicorn-js/prefer-https": [
+      "error",
+      {
+        "ignore": []
+      }
+    ],
+    "unicorn-js/prefer-identifier-import-export-specifiers": "error",
+    "unicorn-js/prefer-includes-over-repeated-comparisons": [
+      "error",
+      {
+        "minimumComparisons": 3
+      }
+    ],
+    "unicorn-js/prefer-iterable-in-constructor": "error",
+    "unicorn-js/prefer-iterator-helpers": "error",
+    "unicorn-js/prefer-iterator-to-array": "error",
+    "unicorn-js/prefer-iterator-to-array-at-end": "error",
+    "unicorn-js/prefer-iterator-zip": "error",
+    "unicorn-js/prefer-literal-ascii": "error",
+    "unicorn-js/prefer-location-assign": "error",
+    "unicorn-js/prefer-map-from-entries": "error",
+    "unicorn-js/prefer-math-abs": "error",
+    "unicorn-js/prefer-math-constants": "error",
+    "unicorn-js/prefer-minimal-ternary": [
+      "error",
+      {
+        "checkVaryingBase": false,
+        "checkComputedMemberAccess": false
+      }
+    ],
+    "unicorn-js/prefer-number-is-safe-integer": "error",
+    "unicorn-js/prefer-object-define-properties": "error",
+    "unicorn-js/prefer-object-destructuring-defaults": "error",
+    "unicorn-js/prefer-object-iterable-methods": "error",
+    "unicorn-js/prefer-observer-apis": "error",
+    "unicorn-js/prefer-path2d": "error",
+    "unicorn-js/prefer-private-class-fields": "error",
+    "unicorn-js/prefer-promise-static-methods": "error",
+    "unicorn-js/prefer-promise-try": "error",
+    "unicorn-js/prefer-promise-with-resolvers": "error",
+    "unicorn-js/prefer-queue-microtask": [
+      "error",
+      {
+        "checkSetImmediate": false,
+        "checkSetTimeout": false
+      }
+    ],
+    "unicorn-js/prefer-scoped-selector": "error",
+    "unicorn-js/prefer-set-methods": "error",
+    "unicorn-js/prefer-short-escape-sequences": "error",
+    "unicorn-js/prefer-simple-condition-first": "error",
+    "unicorn-js/prefer-simple-sort-comparator": "error",
+    "unicorn-js/prefer-simplified-conditions": [
+      "error",
+      {
+        "negatedConditions": "simplify"
+      }
+    ],
+    "unicorn-js/prefer-single-array-predicate": "error",
+    "unicorn-js/prefer-single-object-destructuring": "error",
+    "unicorn-js/prefer-single-replace": "error",
+    "unicorn-js/prefer-smaller-scope": "error",
+    "unicorn-js/prefer-split-limit": "error",
+    "unicorn-js/prefer-string-match-all": "error",
+    "unicorn-js/prefer-string-pad-start-end": "error",
+    "unicorn-js/prefer-string-repeat": [
+      "error",
+      {
+        "minimumRepetitions": 3
+      }
+    ],
     "unicorn-js/prefer-switch": "error",
+    "unicorn-js/prefer-temporal-conversion": "error",
+    "unicorn-js/prefer-then-catch": "error",
+    "unicorn-js/prefer-toggle-attribute": "error",
+    "unicorn-js/prefer-type-literal-last": "error",
+    "unicorn-js/prefer-unary-minus": "error",
+    "unicorn-js/prefer-unicode-code-point-escapes": "error",
+    "unicorn-js/prefer-url-can-parse": "error",
+    "unicorn-js/prefer-url-href": "error",
+    "unicorn-js/prefer-url-search-parameters": "error",
+    "unicorn-js/prefer-while-loop-condition": "error",
+    "unicorn-js/require-array-sort-compare": "error",
+    "unicorn-js/require-css-escape": [
+      "error",
+      {
+        "checkAllSelectors": false
+      }
+    ],
+    "unicorn-js/require-passive-events": "error",
+    "unicorn-js/require-proxy-trap-boolean-return": "error",
+    "unicorn-js/require-text-decoder-streaming": "error",
+    "unicorn-js/single-line-block-comment-style": [
+      "warn",
+      "multiline",
+      {
+        "ignore": []
+      }
+    ],
     "unicorn-js/template-indent": "error",
+    "unicorn/consistent-assert": "error",
     "unicorn/consistent-date-clone": "error",
     "unicorn/consistent-empty-array-spread": "error",
     "unicorn/consistent-existence-index-check": "error",
@@ -1595,6 +1998,7 @@
         }
       }
     ],
+    "unicorn/max-nested-calls": "error",
     "unicorn/new-for-builtins": "error",
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
@@ -1675,6 +2079,7 @@
     "unicorn/prefer-native-coercion-functions": "error",
     "unicorn/prefer-negative-index": "error",
     "unicorn/prefer-node-protocol": "error",
+    "unicorn/prefer-number-coercion": "error",
     "unicorn/prefer-object-from-entries": "error",
     "unicorn/prefer-optional-catch-binding": "error",
     "unicorn/prefer-prototype-methods": "error",

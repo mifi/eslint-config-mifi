@@ -16,7 +16,8 @@ const normalize = (value) => (Array.isArray(value) ? value : [value]);
 // Our own (simplified) resolution of oxlintrc.json for a file, because `oxlint --print-config` omits JS plugin rules
 function getOxlintRules(file) {
   const merged = { ...config.rules };
-  for (const override of config.overrides ?? []) {
+  const overrides = config.overrides ?? [];
+  for (const override of overrides) {
     if (override.files.some((glob) => matchesGlob(file, glob))) Object.assign(merged, override.rules ?? {});
   }
   return Object.fromEntries(Object.entries(merged).map(([name, value]) => [name, normalize(value)]).filter(([, [severity]]) => severity !== 'off'));
@@ -36,9 +37,9 @@ for (const ext of extensions) {
       return rule ? [rule] : [];
     }));
 
-    const extra = Object.fromEntries(Object.entries(actual).filter(([name]) => !(name in expected)));
-    assert.deepEqual(Object.keys(extra).toSorted(), Object.keys(added).toSorted(), 'rules that are not in the legacy config must be listed in `added`');
-    assert.deepEqual(Object.fromEntries(Object.entries(actual).filter(([name]) => name in expected)), expected);
+    const extra = Object.fromEntries(Object.entries(actual).filter(([name]) => !Object.hasOwn(expected, name)));
+    assert.deepEqual(Object.keys(extra).toSorted((a, b) => a.localeCompare(b)), Object.keys(added).toSorted((a, b) => a.localeCompare(b)), 'rules that are not in the legacy config must be listed in `added`');
+    assert.deepEqual(Object.fromEntries(Object.entries(actual).filter(([name]) => Object.hasOwn(expected, name))), expected);
   });
 }
 

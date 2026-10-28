@@ -23,6 +23,8 @@ yarn add -D @mifi/lint-config oxlint oxlint-tsgolint
 
 `oxlint-tsgolint` is needed for the type-aware rules (`--type-aware`).
 
+You may see peer dependency warnings about `eslint`: `eslint-plugin-unicorn` needs ESLint 10, while `eslint-plugin-import` and `eslint-plugin-react` haven't declared support for it yet. They work fine under oxlint (which doesn't run ESLint itself).
+
 ## Using
 
 ```jsonc
