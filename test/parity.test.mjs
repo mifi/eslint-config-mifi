@@ -3,10 +3,11 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { matchesGlob } from 'node:path';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 import { added, dropped, extensions, getLegacyConfig, getNativeRules, oxlintBin, toOxlintRule } from './mapping.mjs';
 
-const configPath = new URL('../oxlintrc.json', import.meta.url).pathname;
+const configPath = fileURLToPath(new URL('../oxlintrc.json', import.meta.url));
 const config = JSON.parse(readFileSync(configPath, 'utf8'));
 const nativeRules = getNativeRules();
 
@@ -48,6 +49,9 @@ test('dropped rules exist in the legacy config', () => {
 
 test('JS plugins get the legacy settings', async () => {
   // import/parsers and import/ignore are only used by the rules that parse other modules, which we dropped
-  const importSettings = Object.fromEntries(Object.entries(getLegacyConfig('ts').settings).filter(([key]) => key.startsWith('import/') && !['import/parsers', 'import/ignore'].includes(key)));
-  assert.deepEqual((await import('../plugins/import.js')).default.defaultSettings, importSettings);
+  const { 'import/resolver': legacyResolver, ...legacySettings } = Object.fromEntries(Object.entries(getLegacyConfig('ts').settings).filter(([key]) => key.startsWith('import/') && !['import/parsers', 'import/ignore'].includes(key)));
+  const { 'import/resolver': resolver, ...settings } = (await import('../plugins/import.js')).default.defaultSettings;
+  assert.deepEqual(settings, legacySettings);
+  // the legacy resolver extensions lacked .tsx, .mts and .cts (and had duplicates)
+  for (const ext of legacyResolver.node.extensions) assert.ok(resolver.node.extensions.includes(ext), ext);
 });

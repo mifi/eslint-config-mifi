@@ -4,7 +4,7 @@ import withDefaultSettings from './withDefaultSettings.js';
 
 export default withDefaultSettings(plugin, {
   'import/resolver': {
-    node: { extensions: ['.mjs', '.cjs', '.js', '.json', '.ts', '.jsx', '.mjs', '.cjs'] },
+    node: { extensions: ['.mjs', '.cjs', '.js', '.json', '.ts', '.tsx', '.mts', '.cts', '.jsx'] },
   },
   'import/extensions': ['.ts', '.cts', '.mts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'],
   'import/external-module-folders': ['node_modules', 'node_modules/@types'],

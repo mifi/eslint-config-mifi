@@ -4,11 +4,12 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-export const oxlintBin = new URL('../node_modules/.bin/oxlint', import.meta.url).pathname;
+export const oxlintBin = fileURLToPath(new URL('../node_modules/.bin/oxlint', import.meta.url));
 
 const jsOnly = 'Only relevant for JavaScript (TypeScript checks this, or it is about prop-types/CommonJS)';
 const deprecated = 'Deprecated upstream, and no longer considered good practice';
@@ -36,7 +37,7 @@ export const dropped = {
 };
 
 // Rules from the legacy config that are replaced by their native successor (with the same severity)
-const replaced = {
+export const replaced = {
   'no-new-object': { by: 'no-object-constructor', reason: `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)` },
 };
 

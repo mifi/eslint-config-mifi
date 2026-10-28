@@ -26,10 +26,10 @@
   },
   "scripts": {
     "test": "node --test",
-    "lint": "oxlint"
+    "lint": "oxlint --deny-warnings"
   },
   "dependencies": {
-    "eslint": "^10.13.0",
+    "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-unicorn": "56.0.1"
