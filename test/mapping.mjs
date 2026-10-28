@@ -54,7 +54,7 @@ export const added = {
   ]),
   // these need type information (oxlint --type-aware)
   ...fromConfigs('typescript-eslint strict-type-checked', [
-    'typescript/await-thenable', 'typescript/no-array-delete', 'typescript/no-base-to-string', 'typescript/no-for-in-array', 'typescript/no-generated-empty-object-type', 'typescript/no-implied-eval',
+    'typescript/await-thenable', 'typescript/no-array-delete', 'typescript/no-base-to-string', 'typescript/no-deprecated', 'typescript/no-for-in-array', 'typescript/no-generated-empty-object-type', 'typescript/no-implied-eval',
     'typescript/no-meaningless-void-operator', 'typescript/no-misused-spread', 'typescript/no-mixed-enums', 'typescript/no-unnecessary-template-expression', 'typescript/no-unnecessary-type-arguments',
     'typescript/no-unnecessary-type-parameters', 'typescript/no-unsafe-call', 'typescript/no-unsafe-enum-comparison', 'typescript/no-unsafe-unary-minus', 'typescript/no-useless-default-assignment',
     'typescript/only-throw-error', 'typescript/prefer-promise-reject-errors', 'typescript/prefer-reduce-type-parameter', 'typescript/prefer-return-this-type', 'typescript/related-getter-setter-pairs',

@@ -1516,6 +1516,7 @@
     "typescript/no-array-delete": "error",
     "typescript/no-base-to-string": "error",
     "typescript/no-confusing-non-null-assertion": "error",
+    "typescript/no-deprecated": "error",
     "typescript/no-duplicate-enum-values": "error",
     "typescript/no-dynamic-delete": "error",
     "typescript/no-empty-object-type": "error",
