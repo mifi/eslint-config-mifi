@@ -2,16 +2,17 @@
 
 mifi's [oxlint](https://oxc.rs/docs/guide/usage/linter) config, formerly [eslint-config-mifi](https://www.npmjs.com/package/eslint-config-mifi) (ESLint + `eslint-config-airbnb`).
 
-It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options, so it's just as strict. The exceptions are a few deprecated or JavaScript-only rules, plus some newer upstream-recommended rules, all listed in [test/mapping.mjs](test/mapping.mjs). This is verified by the [parity tests](test/parity.test.mjs) against a frozen copy of the old config in [legacy/](legacy/).
+It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options, and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.mjs](test/mapping.mjs). This is verified by the [parity tests](test/parity.test.mjs) against a frozen copy of the old config in [legacy/](legacy/).
 
-Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins.html) using the original ESLint plugins, aliased because oxlint reserves the native plugin names:
+Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins.html) using ESLint plugins, some aliased because oxlint reserves the native plugin names:
 
-| Alias | Plugin |
+| Prefix | Plugin |
 | --- | --- |
 | `eslint-js/*` | ESLint's core rules (e.g. the formatting rules) |
-| `react-js/*` | `eslint-plugin-react` |
-| `import-js/*` | `eslint-plugin-import` |
+| `import-js/*` | `eslint-plugin-import-x` (the maintained fork of `eslint-plugin-import`) |
 | `unicorn-js/*` | `eslint-plugin-unicorn` |
+| `@stylistic/*` | `@stylistic/eslint-plugin` (JSX formatting) |
+| `@eslint-react/*` | `@eslint-react/eslint-plugin` |
 
 Formatting rules are warnings, so they stand out from real problems in the editor. Use `--deny-warnings` in CI.
 
@@ -21,9 +22,7 @@ Formatting rules are warnings, so they stand out from real problems in the edito
 yarn add -D @mifi/lint-config oxlint oxlint-tsgolint
 ```
 
-`oxlint-tsgolint` is needed for the type-aware rules (`--type-aware`).
-
-You may see peer dependency warnings about `eslint`: `eslint-plugin-unicorn` needs ESLint 10, while `eslint-plugin-import` and `eslint-plugin-react` haven't declared support for it yet. They work fine under oxlint (which doesn't run ESLint itself).
+`oxlint-tsgolint` is needed for the type-aware rules (`--type-aware`). `typescript` must be installed too (for `@eslint-react`).
 
 ## Using
 
@@ -73,7 +72,7 @@ When a rule causes a lot of changes in your project, turn it off in your own `.o
 
 1. Replace `eslint`, `eslint-config-mifi`, `@typescript-eslint/*` and `eslint-plugin-*` with the packages above.
 2. Move your `.eslintrc*` to `.oxlintrc.json` (see above), and `.eslintignore` to `ignorePatterns`. Note that oxlint doesn't ignore dotfiles (e.g. `.yarn/releases`) like ESLint does.
-3. Rename rules in your config that are now JS plugin rules (e.g. `import/no-extraneous-dependencies` -> `import-js/no-extraneous-dependencies`, see the table above).
+3. Rename rules in your config that are now JS plugin rules (e.g. `import/no-extraneous-dependencies` -> `import-js/no-extraneous-dependencies`, `react/jsx-indent` -> `@stylistic/jsx-indent`, see the table above).
 4. Rename them in your `eslint-disable` comments too (oxlint respects `eslint-disable` comments):
    ```sh
    npx mifi-lint-migrate

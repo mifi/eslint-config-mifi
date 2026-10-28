@@ -9,13 +9,13 @@ test('renames rules in eslint directive comments', () => {
     '// eslint-disable-next-line import/no-extraneous-dependencies',
     '/* eslint-disable quote-props */',
     '// eslint-disable-next-line wrap-iife, func-names -- reason with prefer-switch',
-    '// eslint-disable-line react/destructuring-assignment, @typescript-eslint/no-explicit-any',
+    '// eslint-disable-line react/jsx-indent, @typescript-eslint/no-explicit-any',
     "const a = 'eslint-disable quote-props'; // eslint-disable-line unicorn/prefer-switch",
   ].join('\n')), [
     '// eslint-disable-next-line import-js/no-extraneous-dependencies',
     '/* eslint-disable eslint-js/quote-props */',
     '// eslint-disable-next-line eslint-js/wrap-iife, func-names -- reason with prefer-switch',
-    '// eslint-disable-line react-js/destructuring-assignment, @typescript-eslint/no-explicit-any',
+    '// eslint-disable-line @stylistic/jsx-indent, @typescript-eslint/no-explicit-any',
     "const a = 'eslint-disable quote-props'; // eslint-disable-line unicorn-js/prefer-switch",
   ].join('\n'));
 });

@@ -4,8 +4,13 @@ import { readFileSync } from 'node:fs';
 
 const config = JSON.parse(readFileSync(new URL('oxlintrc.json', import.meta.url), 'utf8'));
 
-// Rules that were replaced by their native successor (see test/mapping.mjs)
-export const replacedRules = { 'no-new-object': 'no-object-constructor' };
+// Rules that were replaced by their successor (see test/mapping.mjs)
+export const replacedRules = {
+  'no-new-object': 'no-object-constructor',
+  'react/no-unused-state': '@eslint-react/no-unused-state',
+  'react/no-unused-class-component-methods': '@eslint-react/no-unused-class-component-members',
+  'react/no-access-state-in-setstate': '@eslint-react/no-access-state-in-setstate',
+};
 
 const renames = new Map([
   ...Object.entries(replacedRules),
@@ -16,6 +21,8 @@ const renames = new Map([
     const [, plugin, rule] = match;
     return [[plugin === 'eslint' ? rule : `${plugin}/${rule}`, name]];
   }),
+  // eslint-plugin-react's formatting rules moved to @stylistic
+  ...Object.keys(config.rules).filter((name) => name.startsWith('@stylistic/jsx-')).map((name) => [name.replace('@stylistic/', 'react/'), name]),
 ]);
 
 // The rule list ends at the end of the line (or comment), or at a `--` description

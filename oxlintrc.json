@@ -15,22 +15,144 @@
       "specifier": "./plugins/eslint.js"
     },
     {
-      "name": "react-js",
-      "specifier": "./plugins/react.js"
-    },
-    {
       "name": "import-js",
       "specifier": "./plugins/import.js"
     },
     {
       "name": "unicorn-js",
       "specifier": "eslint-plugin-unicorn"
+    },
+    "@stylistic/eslint-plugin",
+    {
+      "name": "@eslint-react",
+      "specifier": "@eslint-react/eslint-plugin"
     }
   ],
   "categories": {
     "correctness": "off"
   },
   "rules": {
+    "@eslint-react/dom-no-flush-sync": "error",
+    "@eslint-react/dom-no-hydrate": "error",
+    "@eslint-react/dom-no-missing-iframe-sandbox": "error",
+    "@eslint-react/dom-no-render": "error",
+    "@eslint-react/dom-no-unsafe-iframe-sandbox": "error",
+    "@eslint-react/dom-no-use-form-state": "error",
+    "@eslint-react/jsx-no-children-prop-with-children": "error",
+    "@eslint-react/jsx-no-key-after-spread": "error",
+    "@eslint-react/jsx-no-leaked-dollar": "error",
+    "@eslint-react/jsx-no-leaked-semicolon": "error",
+    "@eslint-react/naming-convention-context-name": "error",
+    "@eslint-react/naming-convention-id-name": "error",
+    "@eslint-react/naming-convention-ref-name": "error",
+    "@eslint-react/no-access-state-in-setstate": "error",
+    "@eslint-react/no-children-count": "error",
+    "@eslint-react/no-children-for-each": "error",
+    "@eslint-react/no-children-map": "error",
+    "@eslint-react/no-children-only": "error",
+    "@eslint-react/no-children-to-array": "error",
+    "@eslint-react/no-class-component": "error",
+    "@eslint-react/no-clone-element": "error",
+    "@eslint-react/no-component-will-mount": "error",
+    "@eslint-react/no-component-will-receive-props": "error",
+    "@eslint-react/no-component-will-update": "error",
+    "@eslint-react/no-context-provider": "error",
+    "@eslint-react/no-create-ref": "error",
+    "@eslint-react/no-forward-ref": "error",
+    "@eslint-react/no-misused-capture-owner-stack": "error",
+    "@eslint-react/no-nested-lazy-component-declarations": "error",
+    "@eslint-react/no-set-state-in-component-did-mount": "error",
+    "@eslint-react/no-unnecessary-use-prefix": "error",
+    "@eslint-react/no-unsafe-component-will-mount": "error",
+    "@eslint-react/no-unsafe-component-will-receive-props": "error",
+    "@eslint-react/no-unsafe-component-will-update": "error",
+    "@eslint-react/no-unstable-default-props": [
+      "error",
+      {
+        "safeDefaultProps": []
+      }
+    ],
+    "@eslint-react/no-unused-class-component-members": "error",
+    "@eslint-react/no-unused-state": "error",
+    "@eslint-react/no-use-context": "error",
+    "@eslint-react/rsc-function-definition": "error",
+    "@eslint-react/use-state": [
+      "error",
+      {
+        "enforceAssignment": true,
+        "enforceLazyInitialization": true,
+        "enforceSetterName": true
+      }
+    ],
+    "@eslint-react/web-api-no-leaked-event-listener": "error",
+    "@eslint-react/web-api-no-leaked-fetch": "error",
+    "@eslint-react/web-api-no-leaked-intersection-observer": "error",
+    "@eslint-react/web-api-no-leaked-interval": "error",
+    "@eslint-react/web-api-no-leaked-resize-observer": "error",
+    "@eslint-react/web-api-no-leaked-timeout": "error",
+    "@stylistic/jsx-closing-bracket-location": [
+      "warn",
+      "line-aligned"
+    ],
+    "@stylistic/jsx-closing-tag-location": "warn",
+    "@stylistic/jsx-curly-newline": [
+      "warn",
+      {
+        "multiline": "consistent",
+        "singleline": "consistent"
+      }
+    ],
+    "@stylistic/jsx-curly-spacing": [
+      "warn",
+      "never",
+      {
+        "allowMultiline": true
+      }
+    ],
+    "@stylistic/jsx-equals-spacing": [
+      "warn",
+      "never"
+    ],
+    "@stylistic/jsx-first-prop-new-line": [
+      "warn",
+      "multiline-multiprop"
+    ],
+    "@stylistic/jsx-indent": [
+      "warn",
+      2
+    ],
+    "@stylistic/jsx-indent-props": [
+      "warn",
+      2
+    ],
+    "@stylistic/jsx-max-props-per-line": [
+      "warn",
+      {
+        "maximum": 1,
+        "when": "multiline"
+      }
+    ],
+    "@stylistic/jsx-tag-spacing": [
+      "warn",
+      {
+        "closingSlash": "never",
+        "beforeSelfClosing": "always",
+        "afterOpening": "never",
+        "beforeClosing": "never"
+      }
+    ],
+    "@stylistic/jsx-wrap-multilines": [
+      "warn",
+      {
+        "declaration": "parens-new-line",
+        "assignment": "parens-new-line",
+        "return": "parens-new-line",
+        "arrow": "parens-new-line",
+        "condition": "parens-new-line",
+        "logical": "parens-new-line",
+        "prop": "parens-new-line"
+      }
+    ],
     "array-callback-return": [
       "error",
       {
@@ -1254,113 +1376,6 @@
     "prefer-template": "error",
     "preserve-caught-error": "error",
     "radix": "error",
-    "react-js/destructuring-assignment": [
-      "error",
-      "always"
-    ],
-    "react-js/jsx-closing-bracket-location": [
-      "warn",
-      "line-aligned"
-    ],
-    "react-js/jsx-closing-tag-location": "warn",
-    "react-js/jsx-curly-newline": [
-      "warn",
-      {
-        "multiline": "consistent",
-        "singleline": "consistent"
-      }
-    ],
-    "react-js/jsx-curly-spacing": [
-      "warn",
-      "never",
-      {
-        "allowMultiline": true
-      }
-    ],
-    "react-js/jsx-equals-spacing": [
-      "warn",
-      "never"
-    ],
-    "react-js/jsx-first-prop-new-line": [
-      "warn",
-      "multiline-multiprop"
-    ],
-    "react-js/jsx-indent": [
-      "warn",
-      2
-    ],
-    "react-js/jsx-indent-props": [
-      "warn",
-      2
-    ],
-    "react-js/jsx-max-props-per-line": [
-      "warn",
-      {
-        "maximum": 1,
-        "when": "multiline"
-      }
-    ],
-    "react-js/jsx-no-bind": [
-      "error",
-      {
-        "ignoreRefs": true,
-        "allowArrowFunctions": true,
-        "allowFunctions": false,
-        "allowBind": false,
-        "ignoreDOMComponents": true
-      }
-    ],
-    "react-js/jsx-no-duplicate-props": [
-      "error",
-      {
-        "ignoreCase": true
-      }
-    ],
-    "react-js/jsx-tag-spacing": [
-      "warn",
-      {
-        "closingSlash": "never",
-        "beforeSelfClosing": "always",
-        "afterOpening": "never",
-        "beforeClosing": "never"
-      }
-    ],
-    "react-js/jsx-wrap-multilines": [
-      "warn",
-      {
-        "declaration": "parens-new-line",
-        "assignment": "parens-new-line",
-        "return": "parens-new-line",
-        "arrow": "parens-new-line",
-        "condition": "parens-new-line",
-        "logical": "parens-new-line",
-        "prop": "parens-new-line"
-      }
-    ],
-    "react-js/no-access-state-in-setstate": "error",
-    "react-js/no-arrow-function-lifecycle": "error",
-    "react-js/no-deprecated": "error",
-    "react-js/no-invalid-html-attribute": "error",
-    "react-js/no-typos": "error",
-    "react-js/no-unused-class-component-methods": "error",
-    "react-js/no-unused-prop-types": [
-      "error",
-      {
-        "customValidators": [],
-        "skipShapeProps": true
-      }
-    ],
-    "react-js/no-unused-state": "error",
-    "react-js/prefer-stateless-function": [
-      "error",
-      {
-        "ignorePureComponents": true
-      }
-    ],
-    "react-js/static-property-placement": [
-      "error",
-      "property assignment"
-    ],
     "react/button-has-type": [
       "error",
       {
@@ -1410,6 +1425,7 @@
     "react/jsx-key": "error",
     "react/jsx-no-comment-textnodes": "error",
     "react/jsx-no-constructed-context-values": "error",
+    "react/jsx-no-duplicate-props": "error",
     "react/jsx-no-script-url": [
       "error",
       [

@@ -51,7 +51,9 @@ test('dropped rules exist in the legacy config', () => {
 test('JS plugins get the legacy settings', async () => {
   // import/parsers and import/ignore are only used by the rules that parse other modules, which we dropped
   const { 'import/resolver': legacyResolver, ...legacySettings } = Object.fromEntries(Object.entries(getLegacyConfig('ts').settings).filter(([key]) => key.startsWith('import/') && !['import/parsers', 'import/ignore'].includes(key)));
-  const { 'import/resolver': resolver, ...settings } = (await import('../plugins/import.js')).default.defaultSettings;
+  // eslint-plugin-import-x reads its settings from import-x/* instead of import/*
+  const importXSettings = (await import('../plugins/import.js')).default.defaultSettings;
+  const { 'import/resolver': resolver, ...settings } = Object.fromEntries(Object.entries(importXSettings).map(([key, value]) => [key.replace(/^import-x\//, 'import/'), value]));
   assert.deepEqual(settings, legacySettings);
   // the legacy resolver extensions lacked .tsx, .mts and .cts (and had duplicates)
   for (const ext of legacyResolver.node.extensions) assert.ok(resolver.node.extensions.includes(ext), ext);

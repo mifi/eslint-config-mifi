@@ -26,6 +26,14 @@ export const dropped = {
   'lines-around-directive': deprecated,
   'no-continue': 'Conflicts with unicorn/prefer-continue (an early `continue` is considered good style now)',
   'import/prefer-default-export': 'Not considered good practice anymore (named exports are easier to refactor and auto-import)',
+  // eslint-plugin-react isn't maintained anymore (and doesn't support ESLint 10). Rules without a native or @eslint-react equivalent:
+  'react/no-deprecated': 'Covered by typescript/no-deprecated (React\'s types mark deprecated APIs)',
+  'react/no-typos': 'Mostly caught by TypeScript',
+  'react/jsx-no-bind': 'Mostly a performance concern, which the React Compiler takes care of',
+  'react/no-unused-prop-types': 'Its @eslint-react successor (no-unused-props) needs type information, which oxlint doesn\'t give JS plugins',
+  'react/no-invalid-html-attribute': 'Only checks values like `rel`, not worth keeping eslint-plugin-react for',
+  ...Object.fromEntries(['react/prefer-stateless-function', 'react/static-property-placement', 'react/no-arrow-function-lifecycle', 'react/destructuring-assignment']
+    .map((rule) => [rule, 'Only about class components (@eslint-react/no-class-component bans them)'])),
   ...Object.fromEntries([
     // these read the exports of other modules, which tsc already checks (typescript-eslint recommends turning them off)
     'import/default', 'import/export', 'import/namespace', 'import/no-named-as-default', 'import/no-named-as-default-member',
@@ -43,6 +51,10 @@ export const dropped = {
 // Rules from the legacy config that are replaced by their native successor
 export const replaced = {
   'no-new-object': { by: 'no-object-constructor', reason: `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)` },
+  // eslint-plugin-react isn't maintained anymore (and doesn't support ESLint 10), @eslint-react is
+  'react/no-unused-state': { by: '@eslint-react/no-unused-state', reason: 'eslint-plugin-react -> @eslint-react' },
+  'react/no-unused-class-component-methods': { by: '@eslint-react/no-unused-class-component-members', reason: 'eslint-plugin-react -> @eslint-react' },
+  'react/no-access-state-in-setstate': { by: '@eslint-react/no-access-state-in-setstate', reason: 'eslint-plugin-react -> @eslint-react' },
 };
 
 // Rules that are not in the legacy config, but recommended upstream (since airbnb was abandoned), and cause few changes in our projects
@@ -137,14 +149,26 @@ export const added = {
     'unicorn-js/require-passive-events', 'unicorn-js/require-proxy-trap-boolean-return', 'unicorn-js/require-text-decoder-streaming',
     'unicorn-js/single-line-block-comment-style',
   ]),
+  // @eslint-react's strict-type-checked rules, except the ones that duplicate native oxlint rules we have enabled, and the ones that need
+  // type information (no-unused-props, no-leaked-conditional-rendering), which oxlint doesn't give JS plugins
+  ...fromConfigs('@eslint-react strict-type-checked', [
+    '@eslint-react/no-children-count', '@eslint-react/no-children-for-each', '@eslint-react/no-children-map', '@eslint-react/no-children-only',
+    '@eslint-react/no-children-to-array', '@eslint-react/no-clone-element', '@eslint-react/no-component-will-mount', '@eslint-react/no-component-will-receive-props',
+    '@eslint-react/no-component-will-update', '@eslint-react/no-context-provider', '@eslint-react/no-create-ref', '@eslint-react/no-forward-ref',
+    '@eslint-react/no-nested-lazy-component-declarations', '@eslint-react/no-set-state-in-component-did-mount', '@eslint-react/no-unnecessary-use-prefix',
+    '@eslint-react/no-unsafe-component-will-mount', '@eslint-react/no-unsafe-component-will-receive-props', '@eslint-react/no-unsafe-component-will-update',
+    '@eslint-react/no-use-context', '@eslint-react/use-state', '@eslint-react/jsx-no-children-prop-with-children', '@eslint-react/jsx-no-key-after-spread',
+    '@eslint-react/jsx-no-leaked-dollar', '@eslint-react/jsx-no-leaked-semicolon', '@eslint-react/rsc-function-definition', '@eslint-react/dom-no-flush-sync',
+    '@eslint-react/dom-no-hydrate', '@eslint-react/dom-no-render', '@eslint-react/dom-no-unsafe-iframe-sandbox', '@eslint-react/dom-no-use-form-state',
+    '@eslint-react/web-api-no-leaked-event-listener', '@eslint-react/web-api-no-leaked-fetch', '@eslint-react/web-api-no-leaked-intersection-observer',
+    '@eslint-react/web-api-no-leaked-interval', '@eslint-react/web-api-no-leaked-resize-observer', '@eslint-react/web-api-no-leaked-timeout',
+    '@eslint-react/naming-convention-context-name', '@eslint-react/naming-convention-id-name', '@eslint-react/naming-convention-ref-name',
+    '@eslint-react/no-class-component', '@eslint-react/no-misused-capture-owner-stack', '@eslint-react/no-unstable-default-props',
+    '@eslint-react/dom-no-missing-iframe-sandbox',
+  ]),
   // relative imports need explicit extensions when run without a bundler (e.g. Node's type stripping), like `./util.ts`
   'import/extensions': 'explicit extensions in relative imports',
   ...fromConfigs('typescript-eslint stylistic-type-checked', ['typescript/non-nullable-type-assertion-style', 'typescript/prefer-find', 'typescript/prefer-includes', 'typescript/prefer-string-starts-ends-with']),
-};
-
-// Native oxlint rules that don't behave like the original, so we load the original ESLint rule as a JS plugin instead
-const preferJsPlugin = {
-  'react/jsx-no-duplicate-props': 'oxlint doesn\'t support the ignoreCase option',
 };
 
 // Options changed from the legacy config (to what oxlint's native rule accepts, or to be stricter), keyed by legacy rule name
@@ -152,6 +176,10 @@ const adaptedOptions = {
   '@typescript-eslint/consistent-type-assertions': {
     reason: 'stricter: type assertions are unchecked, so avoid them (use a disable comment where one is really needed)',
     adapt: ([severity]) => [severity, { assertionStyle: 'never' }],
+  },
+  'react/jsx-no-duplicate-props': {
+    reason: 'oxlint\'s native rule doesn\'t support the ignoreCase option (props that only differ in case)',
+    adapt: ([severity]) => [severity],
   },
   'import/no-cycle': {
     reason: 'oxlint wants maxDepth as a number (unlimited is the default anyway) and has no disableScc (a perf option). eslint-plugin-import always ignores type imports',
@@ -162,8 +190,9 @@ const adaptedOptions = {
 // ESLint plugin name -> oxlint native plugin name (oxlint folds react-hooks into react)
 const nativePlugins = { '': '', '@typescript-eslint': 'typescript', react: 'react', 'react-hooks': 'react', import: 'import', unicorn: 'unicorn', 'jsx-a11y': 'jsx-a11y' };
 
-// ESLint plugin name -> alias of the same ESLint plugin loaded as an oxlint JS plugin (native plugin names are reserved)
-const jsPluginAliases = { '': 'eslint-js', react: 'react-js', import: 'import-js', unicorn: 'unicorn-js' };
+// ESLint plugin name -> alias of the same (or forked) ESLint plugin loaded as an oxlint JS plugin (native plugin names are reserved).
+// import-js is eslint-plugin-import-x (the maintained fork of eslint-plugin-import)
+const jsPluginAliases = { '': 'eslint-js', import: 'import-js', unicorn: 'unicorn-js' };
 
 const splitRuleName = (name) => {
   const i = name.lastIndexOf('/');
@@ -202,11 +231,18 @@ export function getNativeRules() {
   return new Set(rules.map(({ scope, value }) => (scope === 'eslint' ? value : `${scope.replaceAll('_', '-')}/${value}`)));
 }
 
+const stylisticRules = new Set(Object.keys(require('@stylistic/eslint-plugin').rules));
+const ruleMetas = {
+  '': require('eslint/use-at-your-own-risk').builtinRules,
+  react: new Map(Object.entries(createRequire(legacyDir)('eslint-plugin-react').rules)),
+  unicorn: new Map(Object.entries(unicorn.rules)),
+};
+
 function toOxlintRuleName(eslintName, nativeRules) {
   const [plugin, rule] = splitRuleName(eslintName);
 
   const nativePlugin = nativePlugins[plugin];
-  if (nativePlugin != null && !Object.hasOwn(preferJsPlugin, eslintName)) {
+  if (nativePlugin != null) {
     const native = nativePlugin ? `${nativePlugin}/${rule}` : rule;
     if (nativeRules.has(native)) return native;
   }
@@ -215,17 +251,14 @@ function toOxlintRuleName(eslintName, nativeRules) {
   // ESLint's deprecated Node.js core rules live in oxlint's node plugin
   if (plugin === '' && nativeRules.has(`node/${rule}`)) return `node/${rule}`;
 
+  // eslint-plugin-react's formatting rules moved to @stylistic
+  if (plugin === 'react' && stylisticRules.has(rule)) return `@stylistic/${rule}`;
+
   const alias = jsPluginAliases[plugin];
   if (alias) return `${alias}/${rule}`;
   throw new Error(`No oxlint equivalent for ${eslintName}`);
 }
 
-const stylisticRules = new Set(Object.keys(require('@stylistic/eslint-plugin').rules));
-const ruleMetas = {
-  '': require('eslint/use-at-your-own-risk').builtinRules,
-  react: new Map(Object.entries(require('eslint-plugin-react').rules)),
-  unicorn: new Map(Object.entries(unicorn.rules)),
-};
 
 // Rules that moved to @stylistic (or are of the layout type), but are about more than formatting
 const notFormatting = new Set([

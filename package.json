@@ -30,14 +30,16 @@
     "lint": "oxlint --deny-warnings"
   },
   "dependencies": {
+    "@eslint-react/eslint-plugin": "^5.28.8",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "eslint": "^10.13.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-import-x": "^4.17.1",
     "eslint-plugin-unicorn": "^79"
   },
   "peerDependencies": {
     "oxlint": "^1.89.0",
-    "oxlint-tsgolint": "^7.0.2005"
+    "oxlint-tsgolint": "^7.0.2005",
+    "typescript": ">=5.0.0"
   },
   "peerDependenciesMeta": {
     "oxlint-tsgolint": {
@@ -45,8 +47,8 @@
     }
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^5.10.0",
     "oxlint": "^1.89.0",
-    "oxlint-tsgolint": "^7.0.2005"
+    "oxlint-tsgolint": "^7.0.2005",
+    "typescript": "~6.0.3"
   }
 }
