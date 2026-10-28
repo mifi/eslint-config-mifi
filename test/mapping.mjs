@@ -70,8 +70,12 @@ const preferJsPlugin = {
   'react/jsx-no-duplicate-props': 'oxlint doesn\'t support the ignoreCase option',
 };
 
-// Options adapted to what oxlint's native rule accepts, keyed by legacy rule name
+// Options changed from the legacy config (to what oxlint's native rule accepts, or to be stricter), keyed by legacy rule name
 const adaptedOptions = {
+  '@typescript-eslint/consistent-type-assertions': {
+    reason: 'stricter: type assertions are unchecked, so avoid them (use a disable comment where one is really needed)',
+    adapt: ([severity]) => [severity, { assertionStyle: 'never' }],
+  },
   'import/no-cycle': {
     reason: 'oxlint wants maxDepth as a number (unlimited is the default anyway) and has no disableScc (a perf option). eslint-plugin-import always ignores type imports',
     adapt: ([severity, options]) => [severity, { ...Object.fromEntries(Object.entries(options).filter(([key]) => !['maxDepth', 'disableScc'].includes(key))), ignoreTypes: true }],
