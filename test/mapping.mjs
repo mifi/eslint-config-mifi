@@ -184,6 +184,7 @@ export const added = {
     'vitest/require-awaited-expect-poll', 'vitest/require-local-test-context-for-concurrent-snapshots', 'vitest/require-mock-type-parameters',
     'vitest/require-to-throw-message', 'vitest/valid-describe-callback', 'vitest/valid-expect', 'vitest/valid-expect-in-promise', 'vitest/valid-title',
     'vitest/warn-todo', 'oxc/no-accumulating-spread', 'oxc/no-map-spread', 'react/iframe-missing-sandbox', 'react/no-object-type-as-default-prop',
+    'react/exhaustive-effect-dependencies', 'react/hooks', 'react/memo-dependencies', 'react/no-deriving-state-in-effects', 'no-unmodified-loop-condition', 'unicorn/require-post-message-target-origin', 'oxc/no-async-endpoint-handlers', 'jsx-a11y/prefer-tag-over-role',
   ]),
   // relative imports need explicit extensions when run without a bundler (e.g. Node's type stripping), like `./util.ts`
   'import/extensions': 'explicit extensions in relative imports',

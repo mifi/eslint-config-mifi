@@ -942,6 +942,7 @@
         ]
       }
     ],
+    "jsx-a11y/prefer-tag-over-role": "error",
     "jsx-a11y/role-has-required-aria-props": "error",
     "jsx-a11y/role-supports-aria-props": "error",
     "jsx-a11y/scope": "error",
@@ -1230,6 +1231,7 @@
       }
     ],
     "no-unexpected-multiline": "error",
+    "no-unmodified-loop-condition": "error",
     "no-unneeded-ternary": [
       "error",
       {
@@ -1299,6 +1301,7 @@
       "always"
     ],
     "oxc/no-accumulating-spread": "error",
+    "oxc/no-async-endpoint-handlers": "error",
     "oxc/no-map-spread": "error",
     "prefer-arrow-callback": [
       "error",
@@ -1373,7 +1376,9 @@
     ],
     "react/error-boundaries": "error",
     "react/exhaustive-deps": "error",
+    "react/exhaustive-effect-dependencies": "error",
     "react/globals": "error",
+    "react/hooks": "error",
     "react/iframe-missing-sandbox": "error",
     "react/immutability": "error",
     "react/incompatible-library": "error",
@@ -1436,10 +1441,12 @@
         "ignore": []
       }
     ],
+    "react/memo-dependencies": "error",
     "react/no-array-index-key": "error",
     "react/no-children-prop": "error",
     "react/no-danger": "error",
     "react/no-danger-with-children": "error",
+    "react/no-deriving-state-in-effects": "error",
     "react/no-did-update-set-state": "error",
     "react/no-direct-mutation-state": "error",
     "react/no-find-dom-node": "error",
@@ -2090,6 +2097,7 @@
     "unicorn/require-module-attributes": "error",
     "unicorn/require-module-specifiers": "error",
     "unicorn/require-number-to-fixed-digits-argument": "error",
+    "unicorn/require-post-message-target-origin": "error",
     "unicorn/switch-case-braces": "error",
     "unicorn/switch-case-break-position": "error",
     "unicorn/text-encoding-identifier-case": "error",
