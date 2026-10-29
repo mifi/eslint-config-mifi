@@ -1,45 +1,56 @@
 {
-  "name": "eslint-config-mifi",
+  "name": "@mifi/lint-config",
   "packageManager": "yarn@4.12.0",
   "version": "0.1.1",
-  "description": "mifi eslint rules",
+  "description": "mifi's oxlint config (formerly eslint-config-mifi)",
   "repository": "git@github.com:mifi/eslint-config-mifi.git",
   "author": "Mikael Finstad <finstaden@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "engines": {
-    "node": ">= 18"
+    "node": "^22.13.0 || >=24"
   },
   "files": [
-    "index.js"
+    "oxlintrc.json",
+    "plugins",
+    "migrate.mjs",
+    "migrateSource.mjs"
   ],
+  "exports": {
+    "./oxlintrc.json": "./oxlintrc.json"
+  },
+  "bin": {
+    "mifi-lint-migrate": "migrate.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "test": "yarn lint",
-    "lint": "eslint . --ext .js,.mjs,.cjs,.jsx,.ts,.mts,.tsx"
+    "test": "node --test",
+    "lint": "oxlint --type-aware --deny-warnings",
+    "typecheck": "tsc"
   },
   "dependencies": {
-    "eslint-config-airbnb": "^19.0.4"
+    "@eslint-react/eslint-plugin": "^5.28.8",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-unicorn": "^79"
   },
   "peerDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.51.0",
-    "@typescript-eslint/parser": "^8.51.0",
-    "eslint": "^8.57.1",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-unicorn": "56",
-    "typescript": "~6.0.3"
+    "oxlint": "^1.89.0",
+    "oxlint-tsgolint": "^7.0.2005",
+    "typescript": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "oxlint-tsgolint": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@types/react": "^19.2.7",
-    "@typescript-eslint/eslint-plugin": "^8.51.0",
-    "@typescript-eslint/parser": "^8.51.0",
-    "eslint": "^8.57.1",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-unicorn": "56.0.1",
+    "@types/node": "^22",
+    "oxlint": "^1.89.0",
+    "oxlint-tsgolint": "^7.0.2005",
     "typescript": "~6.0.3"
   }
 }
