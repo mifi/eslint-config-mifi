@@ -612,7 +612,7 @@
     ],
     "eslint-js/no-undef-init": "error",
     "for-direction": "error",
-    "func-names": "error",
+    "func-names": "warn",
     "grouped-accessor-pairs": "error",
     "guard-for-in": "error",
     "import-js/no-extraneous-dependencies": [
@@ -969,7 +969,7 @@
       "error",
       "always"
     ],
-    "no-console": "error",
+    "no-console": "warn",
     "no-constant-binary-expression": "error",
     "no-constant-condition": "error",
     "no-constructor-return": "error",
@@ -1402,7 +1402,7 @@
     "react/hooks": "error",
     "react/iframe-missing-sandbox": "error",
     "react/immutability": "error",
-    "react/incompatible-library": "error",
+    "react/incompatible-library": "warn",
     "react/jsx-boolean-value": [
       "error",
       "never",
@@ -1507,7 +1507,7 @@
     ],
     "react/static-components": "error",
     "react/style-prop-object": "error",
-    "react/unsupported-syntax": "error",
+    "react/unsupported-syntax": "warn",
     "react/use-memo": "error",
     "react/void-dom-elements-no-children": "error",
     "react/void-use-memo": "error",

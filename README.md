@@ -2,7 +2,7 @@
 
 mifi's [oxlint](https://oxc.rs/docs/guide/usage/linter) config, formerly [eslint-config-mifi](https://www.npmjs.com/package/eslint-config-mifi) (ESLint + `eslint-config-airbnb`).
 
-It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options (but only formatting rules are warnings now, see below), and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.ts](test/mapping.ts). This is verified by the [parity tests](test/parity.test.ts) against a frozen copy of the old config in [legacy/](legacy/).
+It carries over every rule of the last ESLint-based version (`eslint-config-mifi@0.1.1`), with the same options (but only formatting rules and a few informational ones like `no-console` are warnings now, see below), and adds the current recommended (strict) rules of typescript-eslint, unicorn and @eslint-react. The exceptions (deprecated or JavaScript-only rules, rules of unmaintained plugins) and additions are listed with reasons in [test/mapping.ts](test/mapping.ts). This is verified by the [parity tests](test/parity.test.ts) against a frozen copy of the old config in [legacy/](legacy/).
 
 Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins.html) using ESLint plugins, some aliased because oxlint reserves the native plugin names:
 
@@ -14,7 +14,7 @@ Most rules run natively in oxlint. The rest run as oxlint [JS plugins](https://o
 | `@stylistic/*` | `@stylistic/eslint-plugin` (formatting, the successor of ESLint's and eslint-plugin-react's formatting rules) |
 | `@eslint-react/*` | `@eslint-react/eslint-plugin` |
 
-Formatting rules are warnings, so they stand out from real problems in the editor. Use `--deny-warnings` in CI.
+Formatting rules (and `no-console`, `func-names` and the React Compiler's informational rules) are warnings, so they stand out from real problems in the editor. Use `--deny-warnings` in CI.
 
 ## Installing
 

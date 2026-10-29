@@ -379,11 +379,15 @@ function isFormatting(eslintName: string) {
   return (['', 'react'].includes(plugin) && stylisticRules.has(rule)) || asObject(asObject(ruleMetas[plugin]?.get(rule)).meta).type === 'layout';
 }
 
+// Rules that stay warnings like in the legacy config, because they don't point at bugs:
+// leftover debug logging, anonymous functions (nicer stack traces), and code that the React Compiler skips (informational)
+const keptWarnings = new Set(['no-console', 'func-names', 'react-hooks/incompatible-library', 'react-hooks/unsupported-syntax']);
+
 // Returns the expected oxlint [name, [severity, ...options]] for a legacy ESLint rule, or undefined if dropped
 export function toOxlintRule(eslintName: string, [, ...options]: RuleValue, nativeRules: Set<string>): [string, RuleValue] | undefined {
   if (Object.hasOwn(dropped, eslintName)) return undefined;
   const replacement = replaced[eslintName];
   if (replacement) return [replacement.by, ['error']];
-  const value: RuleValue = [isFormatting(eslintName) ? 'warn' : 'error', ...options];
+  const value: RuleValue = [isFormatting(eslintName) || keptWarnings.has(eslintName) ? 'warn' : 'error', ...options];
   return [toOxlintRuleName(eslintName, nativeRules), adaptedOptions[eslintName]?.adapt(value) ?? value];
 }
