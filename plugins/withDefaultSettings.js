@@ -21,7 +21,7 @@ const mergeSettings = (defaults, settings) => ({
  * @param {S} defaultSettings
  */
 export default function withDefaultSettings(plugin, defaultSettings) {
-  // cached per settings object, because rules (e.g. import-x's resolver) cache on the identity of `context.settings`
+  // cached per settings object (oxlint creates one per file), so that the rules of a file share it: import-x caches its resolver on its identity
   /** @type {WeakMap<Settings, Settings>} */
   const mergedSettings = new WeakMap();
 

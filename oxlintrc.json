@@ -1050,7 +1050,6 @@
       }
     ],
     "no-plusplus": "error",
-    "no-promise-executor-return": "error",
     "no-proto": "error",
     "no-prototype-builtins": "error",
     "no-regex-spaces": "error",
@@ -2022,7 +2021,7 @@
         "ignore": []
       }
     ],
-    "unicorn-js/template-indent": "error",
+    "unicorn-js/template-indent": "warn",
     "unicorn/consistent-assert": "error",
     "unicorn/consistent-date-clone": "error",
     "unicorn/consistent-empty-array-spread": "error",

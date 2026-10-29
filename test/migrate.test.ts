@@ -11,12 +11,14 @@ test('renames rules in eslint directive comments', () => {
     '/* eslint-disable quote-props */',
     '// eslint-disable-next-line wrap-iife, func-names -- reason with prefer-switch',
     '// eslint-disable-line react/jsx-tag-spacing, @typescript-eslint/no-explicit-any',
+    '// eslint-disable-next-line jsx-quotes',
     "const a = 'eslint-disable quote-props'; // eslint-disable-line unicorn/prefer-switch",
   ].join('\n')), [
     '// eslint-disable-next-line import-js/no-extraneous-dependencies',
     '/* eslint-disable @stylistic/quote-props */',
     '// eslint-disable-next-line @stylistic/wrap-iife, func-names -- reason with prefer-switch',
     '// eslint-disable-line @stylistic/jsx-tag-spacing, @typescript-eslint/no-explicit-any',
+    '// eslint-disable-next-line @stylistic/jsx-quotes',
     "const a = 'eslint-disable quote-props'; // eslint-disable-line unicorn-js/prefer-switch",
   ].join('\n'));
 });

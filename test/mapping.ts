@@ -11,7 +11,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import { builtinRules } from 'eslint/use-at-your-own-risk';
 import unicorn from 'eslint-plugin-unicorn';
 
-import { stylisticRenames } from '../migrateSource.mjs';
+import { replacedRules, stylisticRenames } from '../migrateSource.mjs';
 
 // eslint-disable-next-line typescript/no-unsafe-return, typescript/no-unnecessary-type-parameters -- for JSON from trusted sources (our own config and tools)
 export const parseJson = <T>(text: string): T => JSON.parse(text);
@@ -65,7 +65,7 @@ export const dropped: Record<string, string> = {
     // these read the exports of other modules, which tsc already checks (typescript-eslint recommends turning them off)
     'import/default', 'import/export', 'import/namespace', 'import/no-named-as-default', 'import/no-named-as-default-member',
     // CommonJS
-    'global-require', 'no-new-require', 'no-path-concat', 'import/no-import-module-exports',
+    'global-require', 'no-new-require', 'import/no-import-module-exports',
     // prop-types
     'react/forbid-prop-types', 'react/forbid-foreign-prop-types', 'react/default-props-match-prop-types', 'react/prefer-exact-props',
     // only needed by ESLint's no-unused-vars, oxlint's understands JSX
@@ -79,14 +79,17 @@ export const dropped: Record<string, string> = {
 };
 
 // Rules from the legacy config that are replaced by their native successor
-export const replaced: Record<string, { by: string, reason: string }> = {
-  'consistent-return': { by: 'typescript/consistent-return', reason: 'The native, type-aware version (understands void)' },
-  'no-new-object': { by: 'no-object-constructor', reason: `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)` },
+// (their successors are in migrateSource.mjs, which renames them in disable comments)
+const replacedReasons: Record<keyof typeof replacedRules, string> = {
+  'consistent-return': 'The native, type-aware version (understands void)',
+  'no-new-object': `${deprecated}, replaced by no-object-constructor (which also flags \`Object()\`)`,
   // eslint-plugin-react isn't maintained anymore (and doesn't support ESLint 10), @eslint-react is
-  'react/no-unused-state': { by: '@eslint-react/no-unused-state', reason: 'eslint-plugin-react -> @eslint-react' },
-  'react/no-unused-class-component-methods': { by: '@eslint-react/no-unused-class-component-members', reason: 'eslint-plugin-react -> @eslint-react' },
-  'react/no-access-state-in-setstate': { by: '@eslint-react/no-access-state-in-setstate', reason: 'eslint-plugin-react -> @eslint-react' },
+  'react/no-unused-state': 'eslint-plugin-react -> @eslint-react',
+  'react/no-unused-class-component-methods': 'eslint-plugin-react -> @eslint-react',
+  'react/no-access-state-in-setstate': 'eslint-plugin-react -> @eslint-react',
 };
+const replacedBy = new Map(Object.entries(replacedRules));
+export const replaced: Record<string, { by: string, reason: string }> = Object.fromEntries(Object.entries(replacedReasons).map(([name, reason]) => [name, { by: replacedBy.get(name) ?? name, reason }]));
 
 // Rules that are not in the legacy config, but recommended upstream (since airbnb was abandoned), and cause few changes in our projects
 const fromConfigs = (source: string, rules: string[]) => Object.fromEntries(rules.map((rule) => [rule, source]));
@@ -225,9 +228,9 @@ export const added: Record<string, string> = {
     'typescript/require-array-sort-compare', 'typescript/consistent-type-imports', 'typescript/no-import-type-side-effects',
     'typescript/no-unnecessary-qualifier', 'typescript/prefer-enum-initializers',
     'typescript/promise-function-async', 'jsx-a11y/no-aria-hidden-on-focusable', 'jsx-a11y/anchor-ambiguous-text', 'node/no-exports-assign',
-    'node/no-path-concat', 'import/no-empty-named-blocks', 'import/consistent-type-specifier-style', 'promise/no-return-in-finally',
+    'import/no-empty-named-blocks', 'import/consistent-type-specifier-style', 'promise/no-return-in-finally',
     'promise/param-names', 'promise/no-nesting', 'promise/no-return-wrap', 'promise/prefer-catch', 'promise/prefer-await-to-then',
-    'no-useless-call', 'no-promise-executor-return', 'no-implicit-coercion', 'logical-assignment-operators', 'accessor-pairs',
+    'no-useless-call', 'no-implicit-coercion', 'logical-assignment-operators', 'accessor-pairs',
     'unicorn/consistent-function-scoping', 'unicorn/prefer-import-meta-properties',
     'vitest/prefer-strict-equal', 'vitest/prefer-to-be', 'vitest/prefer-expect-resolves',
     'vitest/no-alias-methods', 'vitest/no-duplicate-hooks', 'vitest/no-identical-title', 'vitest/no-test-prefixes',
@@ -372,9 +375,13 @@ const notFormatting = new Set([
   'unicorn/switch-case-braces', // code structure
 ]);
 
+// Formatting rules that aren't of the layout type
+const formatting = new Set(['unicorn/template-indent']);
+
 // Only formatting rules (the ones that moved to @stylistic, or of the layout type) are warnings, so that they stand out from real problems
 function isFormatting(eslintName: string) {
   if (notFormatting.has(eslintName)) return false;
+  if (formatting.has(eslintName)) return true;
   const [plugin, rule] = splitRuleName(eslintName);
   return (['', 'react'].includes(plugin) && stylisticRules.has(rule)) || asObject(asObject(ruleMetas[plugin]?.get(rule)).meta).type === 'layout';
 }

@@ -38,10 +38,8 @@ for (const name of Object.keys(config.rules)) {
   // ESLint's core formatting rules and eslint-plugin-react's formatting rules moved to @stylistic
   if (!name.startsWith('@stylistic/')) continue;
   const stylisticRule = name.slice('@stylistic/'.length);
-  if (stylisticRule.startsWith('jsx-')) {
-    renames.set(`react/${stylisticRule}`, name);
-    continue;
-  }
+  // eslint-plugin-react's JSX formatting rules (but jsx-quotes is a core rule)
+  if (stylisticRule.startsWith('jsx-')) renames.set(`react/${stylisticRule}`, name);
   const coreRule = coreFormattingRules.get(stylisticRule) ?? stylisticRule;
   renames.set(coreRule, name);
   // also the eslint-js/ names that an earlier version of this config used
