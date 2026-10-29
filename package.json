@@ -1,7 +1,7 @@
 {
   "name": "@mifi/lint-config",
   "packageManager": "yarn@4.12.0",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "mifi's oxlint config (formerly eslint-config-mifi)",
   "repository": "git@github.com:mifi/eslint-config-mifi.git",
   "author": "Mikael Finstad <finstaden@gmail.com>",
