@@ -10,7 +10,6 @@
       // the published files are JavaScript (Node doesn't strip types in node_modules), typed with JSDoc comments
       "files": ["plugins/**", "*.mjs"],
       "rules": {
-        "unicorn-js/single-line-block-comment-style": "off",
         "unicorn-js/no-asterisk-prefix-in-documentation-comments": "off"
       }
     },

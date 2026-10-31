@@ -2016,7 +2016,7 @@
     "unicorn-js/require-text-decoder-streaming": "error",
     "unicorn-js/single-line-block-comment-style": [
       "warn",
-      "multiline",
+      "single-line",
       {
         "ignore": []
       }
